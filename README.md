@@ -40,6 +40,8 @@ npm run preview
 - `src/styles/flow-diagram.css`: estilos de los diagramas.
 - `src/components/ProposalDetails.jsx`: datos, recorrido, excepciones, casos y criterios mediante `details` y `summary`.
 - `src/components/Footer.jsx`: equipo y atribuciones.
+- `src/components/Icons.jsx`: set único de íconos SVG.
+- `src/styles/polish.css`: terminación visual; se carga después de `index.css`.
 - `src/data/proposals.js`: fuente de contenido de ambas propuestas.
 - `src/styles/index.css`: identidad visual, estados de foco y adaptación de tamaños.
 - `public/images/S05.webp`: logo original.
@@ -107,6 +109,17 @@ Según lo informado en la sesión, se revisaron visualmente las 14 capturas de l
 - **Contraste:** el botón principal pasó a `#d64212` (4,52:1), con hover `#a63208`, y los rótulos «PROPUESTA R3» y «PROPUESTA R4» a `#67685e` (5,13:1). La variable `--orange` no cambió.
 - **Móvil:** se agregó una indicación breve de desplazamiento, porque a 390 px se ve poco más de un tercio del ancho del diagrama y la barra de desplazamiento puede no estar visible en pantallas táctiles.
 
+### Refinamiento visual (rama `marianoa`)
+
+Se pidió una pasada conservadora para que la landing se vea menos genérica, con la app del TP1 como referencia de terminación, no de marca. La realizó la sesión principal de Claude Code (Claude Opus 5.5), sin subagentes. No cambian las sentencias, el grafo, los textos ni el logo.
+
+- **Dirección:** «tablero de juego». Líneas de cancha detrás del logo, que se dibujan una vez al cargar; banda del hero como marcador; lienzo de los diagramas como pizarra táctica.
+- **Tipografía:** Barlow y Barlow Condensed desde Google Fonts, sin dependencias npm. Sin conexión, la página usa Arial.
+- **Componentes:** íconos SVG en lugar de caracteres de flecha, botón con estados hover, active y focus, radios por jerarquía, desplegables como tarjetas y volver arriba circular.
+- **Diagramas:** nodos redondeados, flechas con esquinas curvas y rótulos SÍ/NO en píldora. Las coordenadas y conexiones de `flows.js` no cambiaron.
+- **Corrección de accesibilidad:** el foco de los enlaces del footer no se distinguía sobre el fondo oscuro; ahora es blanco.
+- **Observación:** el archivo del logo tiene una mancha gris clara arriba a la izquierda. No se modificó.
+
 ## Revisión del equipo
 
 Verificación técnica de etapa 2: build de producción correcto con React 19.3.1 y Vite 8.3.5; render de React comprobado con dos propuestas, diez desplegables, sentencias presentes, tres casos por propuesta, IDs únicos y anclas resueltas. Logo copiado con hash SHA-256 idéntico al original. Instalación sin vulnerabilidades reportadas. La revisión visual y la interacción real por teclado en navegador siguen pendientes; el render estático no las sustituye.
@@ -120,7 +133,7 @@ Verificación automatizada de etapa 3, ejecutada por agentes sobre el build de p
 - **Desplegables:** los 12 abren y cierran con Enter, Espacio y clic.
 - **Navegación:** los enlaces del encabezado, el botón principal, «Volver arriba» y el enlace para saltar al contenido llegan a su destino. Los 21 elementos enfocables se alcanzan con Tab y muestran foco visible.
 - **Accesibilidad:** ids únicos, anclas resueltas, SVG con nombre y descripción accesibles. `axe-core` no informa violaciones a 1920×1080, 1366×768 ni 390×844, con los desplegables abiertos. Los 148 textos de los diagramas, que `axe-core` no evalúa, tienen contraste de 4,5:1 o superior según una medición aparte. No se probó con lector de pantalla.
-- **Diseño:** sin desborde horizontal de la página a 1920×1080, 1366×768 y 390×844. A 390 px cada diagrama se desplaza dentro de su contenedor. La indicación de desplazamiento se ve a 1060, 1024 y 390 px, donde el diagrama se desplaza, y no se ve desde 1080 px; a 1079 px aparece aunque el diagrama todavía entra. El logo carga y se ve completo. El hover del botón cambia de color (`#d64212` a `#a63208`).
+- **Diseño:** sin desborde horizontal de la página a 1920×1080, 1366×768 y 390×844. A 390 px cada diagrama se desplaza dentro de su contenedor. La indicación de desplazamiento se ve a 1024 y 390 px, donde el diagrama se desplaza, y no se ve desde 1120 px; a 1100 px aparece aunque el diagrama todavía entra, para contemplar navegadores con barra de desplazamiento visible. El logo carga y se ve completo. El botón cambia de color en hover y active, y su tono más claro con texto blanco es `#d64212` (4,52:1). Los 127 textos de los nodos entran en sus formas, medidos con las fuentes finales cargadas. Con movimiento reducido no hay animaciones ni transiciones.
 - **Consola:** el único error es un 404 de `/favicon.ico`, porque el proyecto no define favicon.
 
 Pendiente de revisión humana (las pruebas anteriores no la sustituyen):

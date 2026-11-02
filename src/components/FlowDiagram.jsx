@@ -1,11 +1,26 @@
 import { flows } from '../data/flows.js';
+import { Icon, ToggleIcon } from './Icons.jsx';
 import '../styles/flow-diagram.css';
 
 const TYPE_LABELS = { start: 'INICIO', data: 'DATOS DE ENTRADA', query: 'CONSULTA', decision: 'DECISIÓN', action: 'ACCIÓN', human: 'PERSONA', result: 'RESULTADO' };
 const LINE_HEIGHT = 16;
 const KICKER_HEIGHT = 14;
 
+const CORNER = 10;
+
 const nodeText = node => node.lines.join(' ');
+
+// Convierte la ruta ortogonal de una arista en un trazo con esquinas redondeadas.
+function edgePath(points) {
+  return points.map(([x, y], index) => {
+    if (index === 0) return `M${x} ${y}`;
+    const next = points[index + 1];
+    if (!next) return `L${x} ${y}`;
+    const [px, py] = points[index - 1];
+    const inX = Math.sign(x - px), inY = Math.sign(y - py), outX = Math.sign(next[0] - x), outY = Math.sign(next[1] - y);
+    return `L${x - inX * CORNER} ${y - inY * CORNER}Q${x} ${y} ${x + outX * CORNER} ${y + outY * CORNER}`;
+  }).join('');
+}
 
 function kicker(node, rule) {
   if (node.type === 'data') return TYPE_LABELS.data;
@@ -22,14 +37,14 @@ function NodeShape({ node }) {
     return <polygon className="flow-shape" points={`${x + slant},${y} ${x + w},${y} ${x + w - slant},${y + h} ${x},${y + h}`} />;
   }
   if (type === 'start' || type === 'result') return <rect className="flow-shape" x={x} y={y} width={w} height={h} rx={Math.min(h / 2, 30)} />;
-  if (type === 'query') return <><rect className="flow-shape" x={x} y={y} width={w} height={h} rx="3" /><rect className="flow-band" x={x} y={y} width="7" height={h} /></>;
+  if (type === 'query') return <><rect className="flow-shape" x={x} y={y} width={w} height={h} rx="10" /><path className="flow-band" d={`M${x + 7} ${y}h-1a6 6 0 0 0-6 6v${h - 12}a6 6 0 0 0 6 6h1z`} /></>;
   if (type === 'human') return <>
-    <rect className="flow-shape" x={x} y={y} width={w} height={h} rx="3" />
-    <rect className="flow-inner" x={x + 4} y={y + 4} width={w - 8} height={h - 8} rx="2" />
-    <circle className="flow-icon" cx={x + 18} cy={y + 15} r="3.5" />
-    <path className="flow-icon" d={`M${x + 12} ${y + 27}a6 6 0 0 1 12 0z`} />
+    <rect className="flow-shape" x={x} y={y} width={w} height={h} rx="12" />
+    <rect className="flow-inner" x={x + 4} y={y + 4} width={w - 8} height={h - 8} rx="9" />
+    <circle className="flow-icon" cx={x + 19} cy={y + 16} r="3.4" />
+    <path className="flow-icon" d={`M${x + 12.5} ${y + 27.5}a6.5 6.5 0 0 1 13 0`} />
   </>;
-  return <rect className="flow-shape" x={x} y={y} width={w} height={h} rx="3" />;
+  return <rect className="flow-shape" x={x} y={y} width={w} height={h} rx="10" />;
 }
 
 function FlowNode({ node, rule }) {
@@ -52,9 +67,9 @@ function FlowNote({ note }) {
 
 function EdgeLabel({ edge }) {
   const [x, y] = edge.labelAt;
-  const width = edge.label.length * 6.6 + 8;
+  const width = edge.label.length * 6.4 + 10;
   return <g>
-    <rect className="flow-label-bg" x={x - width / 2} y={y - 9} width={width} height="18" />
+    <rect className="flow-label-bg" x={x - width / 2} y={y - 9} width={width} height="18" rx="9" />
     <text className="flow-label" x={x} y={y + 4} textAnchor="middle">{edge.label}</text>
   </g>;
 }
@@ -75,7 +90,7 @@ function Legend() {
 function TextVersion({ flow, rule }) {
   const byId = Object.fromEntries(flow.nodes.map(node => [node.id, node]));
   return <details className="flow-text">
-    <summary>Leer el recorrido como texto <span aria-hidden="true">+</span></summary>
+    <summary><Icon name="text" />Leer el recorrido como texto <ToggleIcon /></summary>
     <div className="detail-content"><ol>{flow.nodes.map(node => {
       const exits = flow.edges.filter(edge => edge.from === node.id);
       return <li key={node.id}>
@@ -100,7 +115,7 @@ export default function FlowDiagram({ proposal }) {
   return <figure className="flow" aria-labelledby={headingId}>
     <h3 id={headingId} className="flow-title">Diagrama {rule} · {flow.title}</h3>
     <Legend />
-    <p className="flow-scroll-hint" aria-hidden="true">Deslizá hacia los costados para ver todo el diagrama →</p>
+    <p className="flow-scroll-hint" aria-hidden="true">Deslizá hacia los costados para ver todo el diagrama <Icon name="arrowRight" size={15} /></p>
     <div className="flow-canvas" tabIndex="0" role="region" aria-label={`Diagrama de flujo de ${rule}, desplazable en pantallas angostas`}>
       <svg className="flow-svg" viewBox={`0 0 1180 ${flow.height}`} role="img" aria-labelledby={svgTitleId} aria-describedby={svgDescId}>
         <title id={svgTitleId}>{`Diagrama de flujo de ${rule}: ${flow.title}`}</title>
@@ -108,7 +123,7 @@ export default function FlowDiagram({ proposal }) {
         <defs>
           <marker id={arrowId} markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path className="flow-arrow-head" d="M0 0 10 5 0 10z" /></marker>
         </defs>
-        {flow.edges.map(edge => <polyline className="flow-edge" key={`${edge.from}-${edge.to}`} points={edge.points.map(point => point.join(',')).join(' ')} markerEnd={`url(#${arrowId})`} />)}
+        {flow.edges.map(edge => <path className="flow-edge" key={`${edge.from}-${edge.to}`} d={edgePath(edge.points)} markerEnd={`url(#${arrowId})`} />)}
         {flow.nodes.map(node => <FlowNode key={node.id} node={node} rule={rule} />)}
         {flow.notes?.map(note => <FlowNote key={nodeText(note)} note={note} />)}
         {flow.edges.filter(edge => edge.label).map(edge => <EdgeLabel key={`${edge.from}-${edge.to}`} edge={edge} />)}
@@ -116,11 +131,11 @@ export default function FlowDiagram({ proposal }) {
     </div>
     <figcaption className="flow-caption">
       <div className="flow-notes">
-        <div><h4>Caso límite</h4><p>{limitCase.input}</p><p><strong>Resultado:</strong> {limitCase.result}</p><p><strong>Límite de interpretación:</strong> {proposal.limit}</p></div>
-        <div><h4>Excepción resuelta</h4><p>{proposal.exceptions[flow.exceptionIndex]}</p></div>
+        <div className="flow-tile"><h4><Icon name="flag" size={16} />Caso límite</h4><p>{limitCase.input}</p><p><strong>Resultado:</strong> {limitCase.result}</p><p><strong>Límite de interpretación:</strong> {proposal.limit}</p></div>
+        <div className="flow-tile"><h4><Icon name="alert" size={16} />Excepción resuelta</h4><p>{proposal.exceptions[flow.exceptionIndex]}</p></div>
       </div>
-      <p className="flow-assumptions"><strong>Supuestos AACMP:</strong> todo lo marcado en verde o como AACMP lo agrega el equipo; la sentencia no lo define.</p>
-      <ul className="flow-assumption-list">{flow.assumptions.map(assumption => <li key={assumption}>{assumption}</li>)}</ul>
+      <div className="flow-assumption-box"><p className="flow-assumptions"><strong>Supuestos AACMP:</strong> todo lo marcado en verde o como AACMP lo agrega el equipo; la sentencia no lo define.</p>
+      <ul className="flow-assumption-list">{flow.assumptions.map(assumption => <li key={assumption}>{assumption}</li>)}</ul></div>
       <TextVersion flow={flow} rule={rule} />
     </figcaption>
   </figure>;
