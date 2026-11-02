@@ -21,6 +21,9 @@
 .flow-canvas { overflow-x: auto; background: #fffdf8; border: 1px solid var(--line); }
 .flow-canvas:focus-visible { outline: 3px solid #a63208; outline-offset: 3px; }
 .flow-svg { display: block; width: 100%; min-width: 980px; height: auto; }
+.flow-scroll-hint { display: none; margin: 0 0 8px; font-size: 12px; font-weight: 700; color: #55584d; }
+/* Por debajo de este ancho el lienzo (980px) no entra en .wrap (100% - 80px), contando la barra vertical. */
+@media (max-width: 1079px) { .flow-scroll-hint { display: block; } }
 
 /* Aristas */
 .flow-edge { fill: none; stroke: var(--ink); stroke-width: 1.6; }

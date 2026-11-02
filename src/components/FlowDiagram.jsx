@@ -100,6 +100,7 @@ export default function FlowDiagram({ proposal }) {
   return <figure className="flow" aria-labelledby={headingId}>
     <h3 id={headingId} className="flow-title">Diagrama {rule} · {flow.title}</h3>
     <Legend />
+    <p className="flow-scroll-hint" aria-hidden="true">Deslizá hacia los costados para ver todo el diagrama →</p>
     <div className="flow-canvas" tabIndex="0" role="region" aria-label={`Diagrama de flujo de ${rule}, desplazable en pantallas angostas`}>
       <svg className="flow-svg" viewBox={`0 0 1180 ${flow.height}`} role="img" aria-labelledby={svgTitleId} aria-describedby={svgDescId}>
         <title id={svgTitleId}>{`Diagrama de flujo de ${rule}: ${flow.title}`}</title>

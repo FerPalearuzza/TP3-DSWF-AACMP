@@ -87,7 +87,7 @@ Evidencia de iteración:
   - La decisión de R4 quedó alineada con el caso límite.
   - Los supuestos pasaron a listarse debajo de cada diagrama.
   - Se corrigieron la leyenda, los textos de los resultados y el nombre accesible del SVG.
-- **Error introducido por esa corrección y detectado al preparar los casos:** la primera decisión de R4 pasó a exigir «pago vinculado a la inscripción». Una inscripción pendiente en un partido arancelado sin pago registrado cumple R4, pero con esa pregunta iba a revisión humana. La decisión ahora pregunta por datos disponibles y coherentes, «sin pagos sin correspondencia verificable», como indica `proposals.js`, y un nuevo supuesto aclara que un partido gratuito o la falta de pago registrado no son datos incoherentes.
+- **Error introducido por esa corrección y detectado al preparar los casos:** la primera decisión de R4 pasó a exigir «pago vinculado a la inscripción». Una inscripción pendiente en un partido arancelado sin pago registrado cumple R4, pero con esa pregunta iba a revisión humana. Esa decisión se corrigió primero para excluir solo los pagos sin correspondencia verificable y quedó simplificada en los ajustes posteriores a la revisión de capturas.
 
 ### Ajustes previos a la revisión humana (rama `marianoa`)
 
@@ -97,6 +97,15 @@ Realizados por la sesión principal de Claude Code (Claude Opus 5.5), sin subage
 - **Atribuciones en `proposals.js`:** «no se agrega una confirmación automática» y los criterios equivalentes dejaron de presentarse como parte de R3 o R4 y quedaron marcados como AACMP. Las sentencias originales no cambiaron.
 - **`.gitignore`:** ignora solo el PDF local de la consigna, por su nombre exacto.
 - **Diagrama R4:** corrección de la primera decisión descrita arriba.
+
+### Ajustes posteriores a la revisión de capturas (rama `marianoa`)
+
+Según lo informado en la sesión, se revisaron visualmente las 14 capturas de la versión anterior y se pidieron estas correcciones, realizadas por la sesión principal de Claude Code (Claude Opus 5.5), sin subagentes:
+
+- **Primera decisión de R4:** ahora pregunta «¿Las consultas fueron válidas y los datos son coherentes?». Los supuestos separan la falta de un pago registrado (el pago continúa sin confirmación), la consulta fallida y los datos contradictorios.
+- **Resultado de R4:** cuando no hay inscripción pendiente en un partido arancelado, el resultado dice «Fin: sin modificaciones; R4 no aplica». Las sentencias no cambiaron.
+- **Contraste:** el botón principal pasó a `#d64212` (4,52:1), con hover `#a63208`, y los rótulos «PROPUESTA R3» y «PROPUESTA R4» a `#67685e` (5,13:1). La variable `--orange` no cambió.
+- **Móvil:** se agregó una indicación breve de desplazamiento, porque a 390 px se ve poco más de un tercio del ancho del diagrama y la barra de desplazamiento puede no estar visible en pantallas táctiles.
 
 ## Revisión del equipo
 
@@ -110,8 +119,8 @@ Verificación automatizada de etapa 3, ejecutada por agentes sobre el build de p
 - **Casos:** un script recorre el grafo con 20 escenarios, sin fallos: positivo, negativo y límite de ambos flujos, condiciones de R3 falsas por separado (requisitos, solicitud y duplicado; el cupo es el caso negativo), R4 sin pago registrado o en partido gratuito, y las excepciones de `proposals.js`. Las respuestas de cada decisión y los resultados esperados los definió el mismo agente, por lo que no reemplazan la revisión lógica del equipo.
 - **Desplegables:** los 12 abren y cierran con Enter, Espacio y clic.
 - **Navegación:** los enlaces del encabezado, el botón principal, «Volver arriba» y el enlace para saltar al contenido llegan a su destino. Los 21 elementos enfocables se alcanzan con Tab y muestran foco visible.
-- **Accesibilidad:** ids únicos, anclas resueltas, SVG con nombre y descripción accesibles. `axe-core` solo informa contraste insuficiente en tres elementos anteriores a los diagramas: el botón principal (3,9:1) y los rótulos «PROPUESTA R3» y «PROPUESTA R4» (4,34:1); no se corrigieron para no modificar el diseño de la landing. Los 149 textos de los diagramas, que `axe-core` no evalúa, tienen contraste de 4,5:1 o superior según una medición aparte. No se probó con lector de pantalla.
-- **Diseño:** sin desborde horizontal de la página a 1920×1080, 1366×768 y 390×844. A 390 px cada diagrama se desplaza dentro de su contenedor. El logo carga y se ve completo.
+- **Accesibilidad:** ids únicos, anclas resueltas, SVG con nombre y descripción accesibles. `axe-core` no informa violaciones a 1920×1080, 1366×768 ni 390×844, con los desplegables abiertos. Los 148 textos de los diagramas, que `axe-core` no evalúa, tienen contraste de 4,5:1 o superior según una medición aparte. No se probó con lector de pantalla.
+- **Diseño:** sin desborde horizontal de la página a 1920×1080, 1366×768 y 390×844. A 390 px cada diagrama se desplaza dentro de su contenedor. La indicación de desplazamiento se ve a 1060, 1024 y 390 px, donde el diagrama se desplaza, y no se ve desde 1080 px; a 1079 px aparece aunque el diagrama todavía entra. El logo carga y se ve completo. El hover del botón cambia de color (`#d64212` a `#a63208`).
 - **Consola:** el único error es un 404 de `/favicon.ico`, porque el proyecto no define favicon.
 
 Pendiente de revisión humana (las pruebas anteriores no la sustituyen):

@@ -69,14 +69,16 @@ export const flows = {
     exceptionIndex: 1,
     assumptions: [
       'Cuentan como datos no coherentes las fuentes de pago contradictorias, un pago sin correspondencia verificable con la inscripción y una inscripción ya confirmada con pago sin confirmar; todos van a revisión humana sin corregir el estado.',
-      'Un partido gratuito o una inscripción sin pago registrado no son datos incoherentes: siguen hacia las decisiones de R4.',
+      'No encontrar un pago registrado no equivale a datos inconsistentes ni a consulta fallida; el pago continúa sin confirmación.',
+      'Una consulta fallida deja el estado desconocido: no equivale a pago sin confirmar y va a revisión humana.',
+      'Un partido gratuito no es un dato incoherente: R4 no aplica.',
     ],
     description: 'Recorrido de R4: ante una revisión de estado se consultan inscripción, partido y pago. Si hay una inscripción pendiente en un partido arancelado y el pago todavía no fue confirmado, se mantiene pendiente y no se confirma. Un pago confirmado tampoco confirma la inscripción en este flujo; los datos inconsistentes y los pedidos de aclaración se derivan a una persona.',
     nodes: [
       { id: 'n1', type: 'start', origin: 'aacmp', cx: 110, cy: 80, w: 190, h: 110, lines: ['Inicio: se solicita revisar', 'el estado de una inscripción'] },
       { id: 'n2', type: 'data', origin: 'rule', cx: 340, cy: 80, w: 200, h: 110, lines: ['Inscripción y su estado;', 'partido y modalidad;', 'confirmación del pago'] },
       { id: 'n3', type: 'query', origin: 'aacmp', cx: 570, cy: 80, w: 190, h: 110, lines: ['Consultar inscripción,', 'partido y pago vinculado'] },
-      { id: 'd1', type: 'decision', origin: 'aacmp', cx: 810, cy: 80, w: 220, h: 150, lines: ['¿Datos disponibles y', 'coherentes, sin pagos', 'sin correspondencia', 'verificable?'] },
+      { id: 'd1', type: 'decision', origin: 'aacmp', cx: 810, cy: 80, w: 220, h: 150, lines: ['¿Las consultas fueron', 'válidas y los datos', 'son coherentes?'] },
       { id: 'h1', type: 'human', origin: 'aacmp', cx: 1060, cy: 80, w: 200, h: 110, lines: ['Informar y proponer', 'revisión humana. Sin cambiar', 'el estado ni confirmar'] },
       { id: 'e1', type: 'result', origin: 'aacmp', cx: 1060, cy: 230, w: 200, h: 70, lines: ['Fin: estado sin cambios,', 'revisión propuesta'] },
       { id: 'd2', type: 'decision', origin: 'rule', cx: 160, cy: 340, w: 270, h: 180, lines: ['¿Existe inscripción pendiente', 'Y el partido es arancelado?'] },
@@ -90,7 +92,7 @@ export const flows = {
       { id: 'a3', type: 'action', origin: 'aacmp', cx: 430, cy: 515, w: 180, h: 100, lines: ['Terminar SIN confirmar', 'automáticamente e informar:', 'R4 no define esa transición'] },
       { id: 'e4', type: 'result', origin: 'aacmp', cx: 430, cy: 650, w: 180, h: 70, lines: ['Fin: inscripción', 'sin cambios'] },
       { id: 'a4', type: 'action', origin: 'aacmp', cx: 160, cy: 515, w: 190, h: 100, lines: ['Terminar sin modificar', 'e informar: R4 no determina', 'el siguiente paso'] },
-      { id: 'e5', type: 'result', origin: 'aacmp', cx: 160, cy: 650, w: 190, h: 70, lines: ['Fin: inscripción', 'sin cambios'] },
+      { id: 'e5', type: 'result', origin: 'aacmp', cx: 160, cy: 650, w: 190, h: 70, lines: ['Fin: sin modificaciones;', 'R4 no aplica'] },
     ],
     edges: [
       { from: 'n1', to: 'n2', points: [[205, 80], [247, 80]] },
