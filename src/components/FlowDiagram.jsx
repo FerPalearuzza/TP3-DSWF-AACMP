@@ -19,7 +19,7 @@ const FLOWS = {
           },
         ],
         no: [
-          { type: 'human',  label: 'Sin datos o hay inconsistencia', sub: 'El agente informa el impedimento concreto → derivación a revisión humana · AACMP' },
+          { type: 'human',  label: 'Condición no cumplida o inconsistencia', sub: 'El agente informa el impedimento concreto (sin cupo o requisitos no cumplidos). Ante inconsistencias → revisión humana · AACMP' },
           { type: 'end',    label: 'Fin', sub: 'No se genera reserva ni inscripción' },
         ],
         yesLabel: 'SÍ', noLabel: 'NO',
@@ -115,13 +115,16 @@ function renderNode(node, idx) {
   if (node.type === 'decision') return <DecisionNode key={key} {...node} />;
   if (node.type === 'human')    return <HumanNode    key={key} {...node} />;
   if (node.type === 'end')      return <EndNode      key={key} {...node} />;
+  if (node.type === 'fork' || node.type === 'subfork') {
+    return <SubFork key={key} {...node} />;
+  }
   return null;
 }
 
-function Fork({ yes, no, yesLabel, noLabel }) {
+function SubFork({ yes, no, yesLabel, noLabel }) {
   return (
-    <div className="fd-fork">
-      <div className="fd-fork-branch fd-fork-yes">
+    <div className="fd-subfork">
+      <div className="fd-subfork-branch fd-subfork-yes">
         <Arrow label={yesLabel} />
         {yes.map((n, i) => (
           <span key={i}>
@@ -130,7 +133,7 @@ function Fork({ yes, no, yesLabel, noLabel }) {
           </span>
         ))}
       </div>
-      <div className="fd-fork-branch fd-fork-no">
+      <div className="fd-subfork-branch fd-subfork-no">
         <Arrow label={noLabel} />
         {no.map((n, i) => (
           <span key={i}>
@@ -138,6 +141,39 @@ function Fork({ yes, no, yesLabel, noLabel }) {
             {i < no.length - 1 && <Arrow />}
           </span>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function Fork({ yes, no, yesLabel, noLabel }) {
+  return (
+    <div className="fd-fork">
+      <div className="fd-fork-branch fd-fork-yes">
+        <Arrow label={yesLabel} />
+        {yes.map((n, i) => {
+          const next = yes[i + 1];
+          const needsArrow = i < yes.length - 1 && next?.type !== 'fork' && next?.type !== 'subfork';
+          return (
+            <span key={i}>
+              {renderNode(n, i)}
+              {needsArrow && <Arrow />}
+            </span>
+          );
+        })}
+      </div>
+      <div className="fd-fork-branch fd-fork-no">
+        <Arrow label={noLabel} />
+        {no.map((n, i) => {
+          const next = no[i + 1];
+          const needsArrow = i < no.length - 1 && next?.type !== 'fork' && next?.type !== 'subfork';
+          return (
+            <span key={i}>
+              {renderNode(n, i)}
+              {needsArrow && <Arrow />}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
