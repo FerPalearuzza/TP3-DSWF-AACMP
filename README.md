@@ -85,8 +85,18 @@ Evidencia de iteración:
 - **Pedido de mejora y cambios:**
   - El resultado de R3 quedó en «inscripción pendiente», y la aclaración pasó a una nota AACMP.
   - La decisión de R4 quedó alineada con el caso límite.
-  - «Pago vinculado a la inscripción» pasó a ser explícito, y los supuestos se listan debajo de cada diagrama.
+  - Los supuestos pasaron a listarse debajo de cada diagrama.
   - Se corrigieron la leyenda, los textos de los resultados y el nombre accesible del SVG.
+- **Error introducido por esa corrección y detectado al preparar los casos:** la primera decisión de R4 pasó a exigir «pago vinculado a la inscripción». Una inscripción pendiente en un partido arancelado sin pago registrado cumple R4, pero con esa pregunta iba a revisión humana. La decisión ahora pregunta por datos disponibles y coherentes, «sin pagos sin correspondencia verificable», como indica `proposals.js`, y un nuevo supuesto aclara que un partido gratuito o la falta de pago registrado no son datos incoherentes.
+
+### Ajustes previos a la revisión humana (rama `marianoa`)
+
+Realizados por la sesión principal de Claude Code (Claude Opus 5.5), sin subagentes:
+
+- **Problema de la startup:** `StartupIntro.jsx` agrega una descripción explícita. El PDF no enuncia un problema: la redacción es de AACMP, a partir del objetivo de la startup y del bloque asignado, y no agrega características.
+- **Atribuciones en `proposals.js`:** «no se agrega una confirmación automática» y los criterios equivalentes dejaron de presentarse como parte de R3 o R4 y quedaron marcados como AACMP. Las sentencias originales no cambiaron.
+- **`.gitignore`:** ignora solo el PDF local de la consigna, por su nombre exacto.
+- **Diagrama R4:** corrección de la primera decisión descrita arriba.
 
 ## Revisión del equipo
 
@@ -97,10 +107,11 @@ Verificación automatizada de etapa 3, ejecutada por agentes sobre el build de p
 - **Build:** `npm run build` correcto.
 - **Sentencias:** R3 y R4 son idénticas al texto de la página 15 del PDF, y `proposals.js` no se modificó.
 - **Grafo:** todos los nodos son alcanzables, todos los caminos terminan en un resultado, no hay ciclos y cada decisión tiene una salida SÍ y una NO. Ningún camino confirma una inscripción.
-- **Casos:** se recorrieron sobre el grafo los casos positivo, negativo y límite de ambos flujos, cada condición de R3 falsa por separado y las excepciones de `proposals.js`.
+- **Casos:** un script recorre el grafo con 20 escenarios, sin fallos: positivo, negativo y límite de ambos flujos, condiciones de R3 falsas por separado (requisitos, solicitud y duplicado; el cupo es el caso negativo), R4 sin pago registrado o en partido gratuito, y las excepciones de `proposals.js`. Las respuestas de cada decisión y los resultados esperados los definió el mismo agente, por lo que no reemplazan la revisión lógica del equipo.
 - **Desplegables:** los 12 abren y cierran con Enter, Espacio y clic.
-- **Accesibilidad:** ids únicos, anclas resueltas, SVG con nombre y descripción accesibles, y contenedor del diagrama alcanzable con Tab.
-- **Diseño:** sin desborde horizontal de la página a 1920, 1366, 1024 y 390 px de ancho. A 1024 y 390 px el diagrama se desplaza dentro de su contenedor.
+- **Navegación:** los enlaces del encabezado, el botón principal, «Volver arriba» y el enlace para saltar al contenido llegan a su destino. Los 21 elementos enfocables se alcanzan con Tab y muestran foco visible.
+- **Accesibilidad:** ids únicos, anclas resueltas, SVG con nombre y descripción accesibles. `axe-core` solo informa contraste insuficiente en tres elementos anteriores a los diagramas: el botón principal (3,9:1) y los rótulos «PROPUESTA R3» y «PROPUESTA R4» (4,34:1); no se corrigieron para no modificar el diseño de la landing. Los 149 textos de los diagramas, que `axe-core` no evalúa, tienen contraste de 4,5:1 o superior según una medición aparte. No se probó con lector de pantalla.
+- **Diseño:** sin desborde horizontal de la página a 1920×1080, 1366×768 y 390×844. A 390 px cada diagrama se desplaza dentro de su contenedor. El logo carga y se ve completo.
 - **Consola:** el único error es un 404 de `/favicon.ico`, porque el proyecto no define favicon.
 
 Pendiente de revisión humana (las pruebas anteriores no la sustituyen):

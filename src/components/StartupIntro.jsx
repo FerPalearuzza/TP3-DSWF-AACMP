@@ -2,6 +2,7 @@ export default function StartupIntro() {
   return <section id="inicio" className="hero wrap" aria-labelledby="hero-title">
     <div className="hero-copy"><p className="eyebrow"><span className="dot" /> S05-B · INSCRIPCIÓN Y PAGO</p>
       <h1 id="hero-title">El próximo<br />paso está en<br /><em>la cancha.</em></h1>
+      <p className="hero-description"><strong>El problema:</strong> quien quiere jugar al básquet necesita encontrar un partido que coincida con su zona, su horario y su nivel y, al anotarse, saber en qué estado queda su inscripción.</p>
       <p className="hero-description">Dos propuestas agénticas para entender la inscripción y el pago en <strong>FUL Y VALE APP</strong>, la aplicación para encontrar partidos de básquet según zona, horario y nivel.</p>
       <a className="button" href="#r3">Explorar las propuestas <span aria-hidden="true">↘</span></a>
       <p className="hero-note">TP3 · IFTS 29 · Grupo 04 AACMP</p>
