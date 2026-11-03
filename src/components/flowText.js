@@ -14,5 +14,17 @@ export const originLabel = (node, rule) => node.origin === 'aacmp' ? 'Agregado p
 export function sceneAround(flow, id) {
   if (!id) return null;
   const edges = flow.edges.filter(edge => edge.from === id || edge.to === id);
-  return { active: id, lit: new Set(edges.flatMap(edge => [edge.from, edge.to])), edges: new Set(edges), steps: null, drawing: null };
+  return { active: id, lit: new Set(edges.flatMap(edge => [edge.from, edge.to])), edges: new Set(edges), order: null, drawing: null };
+}
+
+// Lo recorrido hasta el paso actual de un recorrido guiado. El resto del diagrama sigue visible.
+export function sceneOfRoute(route, step) {
+  const visited = route.slice(0, step + 1);
+  return {
+    active: route[step].node.id,
+    lit: new Set(visited.map(item => item.node.id)),
+    edges: new Set(visited.slice(0, -1).map(item => item.exit)),
+    order: new Map(visited.map((item, index) => [item.node.id, index + 1])),
+    drawing: step > 0 ? route[step - 1].exit : null,
+  };
 }

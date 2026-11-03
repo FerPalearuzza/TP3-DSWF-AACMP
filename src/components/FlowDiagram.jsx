@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { flows } from '../data/flows.js';
+import { buildRoute, walkthroughs } from '../data/walkthroughs.js';
 import { Icon, ToggleIcon } from './Icons.jsx';
 import FlowExplorer from './FlowExplorer.jsx';
-import { kicker, nodeText, sceneAround } from './flowText.js';
+import { kicker, nodeText, sceneAround, sceneOfRoute } from './flowText.js';
 import '../styles/flow-diagram.css';
 
 const LINE_HEIGHT = 16;
@@ -118,29 +119,44 @@ function FlowHighlight({ flow, scene, arrowId }) {
   </g>;
 }
 
+// Número de paso de cada nodo recorrido, para no depender solo del color.
+function StepBadges({ flow, order }) {
+  return flow.nodes.filter(node => order.has(node.id)).map(node => {
+    const x = node.type === 'decision' ? node.cx + node.w / 4 + 6 : node.cx + node.w / 2 - 8;
+    const y = node.type === 'decision' ? node.cy - node.h / 4 - 6 : node.cy - node.h / 2 + 6;
+    return <g className="flow-badge" key={node.id}><circle cx={x} cy={y} r="11" /><text x={x} y={y + 4} textAnchor="middle">{order.get(node.id)}</text></g>;
+  });
+}
+
 export default function FlowDiagram({ proposal }) {
   const { id, rule } = proposal;
   const flow = flows[id];
   const [hovered, setHovered] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [tour, setTour] = useState(null);
   const canvasRef = useRef(null);
   const svgRef = useRef(null);
-  const scene = sceneAround(flow, hovered ?? selected);
+  const route = tour ? buildRoute(flow, walkthroughs[id][tour.index]) : null;
+  const scene = tour ? sceneOfRoute(route, tour.step) : sceneAround(flow, hovered ?? selected);
+  const focusId = tour ? route[tour.step].node.id : selected;
 
   // Centra el nodo elegido desplazando solo el lienzo: la página no se mueve.
   useEffect(() => {
     const canvas = canvasRef.current;
-    const node = flow.nodes.find(item => item.id === selected);
+    const node = flow.nodes.find(item => item.id === focusId);
     if (!node || canvas.scrollWidth <= canvas.clientWidth) return;
     const scale = svgRef.current.getBoundingClientRect().width / VIEW_WIDTH;
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     canvas.scrollTo({ left: node.cx * scale - canvas.clientWidth / 2, behavior: calm ? 'auto' : 'smooth' });
-  }, [flow, selected]);
+  }, [flow, focusId]);
 
   const nodeAt = target => target.closest('[data-node]')?.dataset.node ?? null;
   // Solo el cursor resalta al pasar; en pantallas táctiles se elige con un toque.
-  const onPointerOver = event => { if (event.pointerType !== 'touch') setHovered(nodeAt(event.target)); };
-  const onClick = event => setSelected(nodeAt(event.target));
+  // Durante un recorrido el avance se controla desde el panel.
+  const onPointerOver = event => { if (event.pointerType !== 'touch' && !tour) setHovered(nodeAt(event.target)); };
+  const onClick = event => { if (!tour) setSelected(nodeAt(event.target)); };
+  const startTour = index => { setHovered(null); setSelected(null); setTour({ index, step: 0 }); };
+  const moveTour = delta => setTour(current => ({ ...current, step: current.step + delta }));
 
   const limitCase = proposal.cases[2];
   const headingId = `${id}-diagram-title`;
@@ -154,7 +170,7 @@ export default function FlowDiagram({ proposal }) {
     <Legend />
     <p className="flow-scroll-hint" aria-hidden="true">Deslizá hacia los costados para ver todo el diagrama <Icon name="arrowRight" size={15} /></p>
     <div className="flow-canvas" ref={canvasRef} tabIndex="0" role="region" aria-label={`Diagrama de flujo de ${rule}, desplazable en pantallas angostas`}>
-      <svg className={`flow-svg${scene ? ' is-lit' : ''}`} ref={svgRef} viewBox={`0 0 ${VIEW_WIDTH} ${flow.height}`} role="img" aria-labelledby={svgTitleId} aria-describedby={svgDescId} onPointerOver={onPointerOver} onPointerLeave={() => setHovered(null)} onClick={onClick}>
+      <svg className={`flow-svg${scene ? ' is-lit' : ''}${tour ? ' is-touring' : ''}`} ref={svgRef} viewBox={`0 0 ${VIEW_WIDTH} ${flow.height}`} role="img" aria-labelledby={svgTitleId} aria-describedby={svgDescId} onPointerOver={onPointerOver} onPointerLeave={() => setHovered(null)} onClick={onClick}>
         <title id={svgTitleId}>{`Diagrama de flujo de ${rule}: ${flow.title}`}</title>
         <desc id={svgDescId}>{flow.description}</desc>
         <defs>
@@ -166,9 +182,10 @@ export default function FlowDiagram({ proposal }) {
         {flow.nodes.map(node => <FlowNode key={node.id} node={node} rule={rule} dim={scene && !scene.lit.has(node.id)} />)}
         {flow.notes?.map(note => <FlowNote key={nodeText(note)} note={note} />)}
         {flow.edges.filter(edge => edge.label).map(edge => <EdgeLabel key={`${edge.from}-${edge.to}`} edge={edge} />)}
+        {scene?.order && <StepBadges flow={flow} order={scene.order} />}
       </svg>
     </div>
-    <FlowExplorer flow={flow} rule={rule} selected={selected} onSelect={setSelected} onClose={() => setSelected(null)} />
+    <FlowExplorer flow={flow} rule={rule} cases={proposal.cases} walkthroughs={walkthroughs[id]} selected={selected} tour={tour} route={route} onSelect={setSelected} onClose={() => setSelected(null)} onStartTour={startTour} onStep={moveTour} onExitTour={() => setTour(null)} />
     <figcaption className="flow-caption">
       <div className="flow-notes">
         <div className="flow-tile"><h4><Icon name="flag" size={16} />Caso límite</h4><p>{limitCase.input}</p><p><strong>Resultado:</strong> {limitCase.result}</p><p><strong>Límite de interpretación:</strong> {proposal.limit}</p></div>

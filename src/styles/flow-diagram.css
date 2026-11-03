@@ -110,6 +110,32 @@
 .explorer-exit { display: block; width: 100%; }
 .explorer-exit b { margin-right: 4px; color: var(--accent-text); font-weight: 800; }
 
+/* Recorridos guiados */
+.is-touring .flow-node { cursor: default; }
+.flow-trace-line.is-drawing { stroke-dasharray: 1; animation: trace-draw 320ms ease-out both; }
+@keyframes trace-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.flow-badge { pointer-events: none; }
+.flow-badge circle { fill: var(--flow-trace); stroke: var(--canvas); stroke-width: 2; }
+.flow-badge text { fill: var(--flow-trace-ink); font-size: 12px; font-weight: 800; }
+.explorer-idle { align-items: flex-start; }
+.explorer-intro { flex: 1 1 300px; }
+.explorer-intro .explorer-actions { margin-top: 10px; }
+.explorer-route { display: grid; gap: 8px; }
+/* Si el panel tiene que desplazarse, los controles del recorrido siguen a la vista. */
+.explorer-route > .explorer-actions { position: sticky; bottom: -14px; margin: 0 -16px -14px; padding: 8px 16px 14px; background: var(--paper); }
+.explorer-progress { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 13px; color: var(--text-heading); }
+.explorer-progress .icon { color: var(--accent-text); }
+.explorer-progress span { margin-left: auto; font-weight: 700; }
+.explorer-case { font-size: 13px; }
+.explorer-route-body { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 1.4fr); gap: 8px 24px; padding-top: 8px; border-top: 1px solid var(--line); }
+.explorer-route-notes { display: grid; gap: 6px; align-content: start; font-size: 14px; }
+.explorer-answer { color: var(--accent-text); font-weight: 800; }
+.explorer-assumption { padding: 6px 10px; background: var(--aacmp-tint); border-radius: var(--r-chip); color: var(--aacmp-box-text); }
+.explorer-result { color: var(--text-heading); }
+.explorer-next { background: var(--orange-solid); border-color: var(--orange-press); color: #fff; }
+.explorer-next:hover { background: var(--orange-press); border-color: var(--orange-press); }
+.explorer-button[aria-disabled='true'] { background: transparent; border-color: var(--line); color: var(--text-detail); cursor: not-allowed; }
+
 /* Notas y versión textual */
 .flow-caption { margin-top: 12px; font-size: 15px; color: var(--text-detail); }
 .flow-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -129,6 +155,7 @@
   .explorer-node { grid-template-columns: minmax(0, 1fr) auto; }
   .explorer-links { grid-column: 1 / -1; grid-row: 2; }
   .explorer-close { grid-column: 2; grid-row: 1; }
+  .explorer-route-body { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 640px) {
   .flow { padding: 16px 10px 10px; border-radius: 18px; }
@@ -136,5 +163,6 @@
   .flow-title { font-size: 24px; }
   .flow-notes { grid-template-columns: 1fr; gap: 10px; }
   .flow-explorer { padding: 12px; }
+  .explorer-route > .explorer-actions { bottom: -12px; margin: 0 -12px -12px; padding: 8px 12px 12px; }
   .explorer-links { grid-template-columns: 1fr; }
 }
