@@ -6,6 +6,8 @@ Landing del grupo 04 AACMP para Desarrollo de Sistemas Web Frontend, IFTS 29 (20
 
 Etapa 3 (rama `marianoa`): estructura, contenido aprobado, navegación por anclas, desplegables nativos y dos diagramas de flujo SVG, uno para R3 y otro para R4. No hay backend, APIs, agentes funcionales ni procesamiento de pagos.
 
+Etapa «Tablero táctico interactivo» (rama `marianoa`): tema claro y oscuro, entrada animada del hero, exploración de los diagramas y recorridos guiados. La interacción es una capa opcional: sin hover, clic ni recorrido activo, cada diagrama se ve completo como antes, y ningún estado oculta nodos.
+
 Las sentencias originales se conservan en `src/data/proposals.js`. Las alternativas y herramientas agregadas se identifican como decisiones AACMP. Un partido gratuito no se confirma automáticamente por R3; un pago confirmado no confirma automáticamente una inscripción por R4.
 
 El logo original se copió desde el recurso proporcionado `S05.webp`, sin recrearlo ni modificar el archivo de imagen.
@@ -33,6 +35,11 @@ npm run preview
 - React 19 + Vite + JavaScript; CSS sin bibliotecas adicionales.
 - `src/App.jsx`: composición de la página.
 - `src/components/Header.jsx`: identidad y navegación por anclas.
+- `src/components/ThemeToggle.jsx`: selector de tema; `index.html` fija el tema antes de pintar.
+- `src/components/FlowExplorer.jsx`: panel HTML de exploración y recorridos, equivalente de teclado y lector de pantalla del SVG.
+- `src/components/flowText.js`: textos y resaltados derivados del grafo.
+- `src/data/walkthroughs.js`: salida de cada decisión en los seis recorridos; la ruta se calcula con las aristas de `flows.js`.
+- `src/styles/tokens.css`: variables semánticas de color de ambos temas.
 - `src/components/StartupIntro.jsx`: presentación y logo original.
 - `src/components/ProposalSection.jsx`: sección reutilizable para R3 y R4.
 - `src/components/FlowDiagram.jsx`: renderer SVG genérico de los diagramas, con leyenda, caso límite, supuestos y versión textual generada desde el mismo grafo.
@@ -120,7 +127,46 @@ Se pidió una pasada conservadora para que la landing se vea menos genérica, co
 - **Corrección de accesibilidad:** el foco de los enlaces del footer no se distinguía sobre el fondo oscuro; ahora es blanco.
 - **Observación:** el archivo del logo tiene una mancha gris clara arriba a la izquierda. No se modificó.
 
+### Tablero táctico interactivo + Light/Dark (rama `marianoa`)
+
+Se pidió primero un análisis sin programar. La propuesta se aprobó en la sesión con condiciones: diagramas siempre completos, interacción opcional y sin cambios en sentencias, grafos, `flows.js`, `proposals.js` ni el logo.
+
+Aplicación: Claude Code. Modelo: Claude Opus 5.5 (`claude-opus-5-5`). Análisis, programación, pruebas y este registro los realizó la sesión principal, sin subagentes. No se delegó en agentes de Herdr. La revisión independiente por otro agente no se hizo.
+
+- **Tema:** variables semánticas en `tokens.css`, selector de sol y luna, preferencia guardada solo ante una elección explícita y, si no la hay, `prefers-color-scheme`.
+- **Hero:** una sola entrada de 1,38 s con cancha, disco, un destello y el 05 como marcador. Nada queda animado después.
+- **Exploración:** hover, clic o toque resaltan el nodo y sus conexiones directas. Un nodo con varias entradas las lista todas, sin sugerir una ruta única. El panel usa solo datos de `flows.js`.
+- **Recorridos:** positivo, negativo y límite de cada regla, con avance manual. Las decisiones que el caso no define se muestran como «Supuesto AACMP».
+
+Cambio visible en el tema claro: la leyenda dice «Naranja o alto contraste» en lugar de «Naranja o negro», porque en oscuro los resultados de regla no son negros.
+
+Problemas detectados por las pruebas y corregidos:
+
+- Al seguir las salidas hasta un resultado final, el foco del teclado se perdía; ahora pasa a «Cerrar».
+- El panel fijo era demasiado alto en 1366×768 y podía tapar el nodo elegido; en escritorio se compactó.
+- A 320 px los controles del recorrido podían quedar fuera de vista; ahora quedan fijos dentro del panel.
+- «IDENTIDAD ORIGINAL» sobre el resplandor del logo bajaba a 4,00:1 en oscuro y a 4,33:1 en claro a 320 px; este último valor ya existía antes de esta etapa. Se aclaró ese texto en oscuro y por debajo de 390 px.
+
 ## Revisión del equipo
+
+Verificación automatizada de la etapa «Tablero táctico», ejecutada por el agente en Chrome headless sobre el build de producción. Los scripts quedaron fuera del repositorio:
+
+- **Build:** `npm run build` correcto.
+- **Lógica:** `flows.js`, `proposals.js` y `S05.webp` sin cambios (hash y `git diff`). R3 y R4 idénticas a la página 15 del PDF. Integridad del grafo sin fallos y 20 de 20 escenarios correctos.
+- **Recorridos:** los 6 usan aristas reales, terminan en el resultado esperado y coinciden con una evaluación separada de cada caso. Los supuestos y las respuestas esperadas los definió el mismo agente, por lo que no reemplazan la revisión lógica del equipo.
+- **Teclado:** los 6 recorridos se completan con teclado, con foco controlado y Esc para salir. La página tiene 30 paradas de Tab, todas con foco visible y ninguna dentro del SVG.
+- **Hover, clic y toque:** comprobados. El toque se probó con emulación móvil de Chrome, no en un dispositivo real. Al centrar un nodo se desplaza solo el lienzo: la posición vertical de la página no cambia.
+- **Tema:** elección guardada, preferencia del sistema, valor inválido y almacenamiento bloqueado. Con el JavaScript de la aplicación bloqueado, el tema oscuro y su fondo ya están aplicados, lo que evita el parpadeo.
+- **Accesibilidad:** `axe-core` no informa violaciones en ambos temas a 1920, 1366, 390 y 320 px, en reposo, con desplegables abiertos, con selección y durante un recorrido. Como `axe-core` no evalúa el texto del SVG ni algunos fondos con degradado, se midieron aparte: los textos del SVG, incluso atenuados, superan 4,5:1, y los textos sobre degradado superan 4,5:1 (número 05, texto grande: mínimo 3,11:1). No se probó con lector de pantalla.
+- **Responsive:** sin desborde horizontal de la página en esos anchos y con el desplazamiento interno de los diagramas intacto. El header no se superpone en 13 anchos de 1920 a 320 px.
+- **Movimiento reducido:** estado final inmediato, sin animaciones ni transiciones. Los recorridos no avanzan solos.
+- **Tema claro:** comparada con el commit `58737a5`, quitando solo el header, el panel nuevo y el texto de la leyenda, la página completa tiene 0 píxeles distintos a 1920, 1366 y 390 px. A 320 px difieren 453 píxeles, en la zona de «IDENTIDAD ORIGINAL», por la corrección de contraste.
+
+Limitaciones conocidas:
+
+- Mientras está activo, el panel queda fijo abajo y puede cubrir la parte inferior del diagrama hasta que se desplaza la página o se cierra.
+- En móvil, el lienzo solo centra el nodo en horizontal: si el nodo activo queda arriba o abajo de la pantalla, hay que desplazar la página.
+- Esc funciona con el foco dentro del panel, no con el foco en el lienzo.
 
 Verificación técnica de etapa 2: build de producción correcto con React 19.3.1 y Vite 8.3.5; render de React comprobado con dos propuestas, diez desplegables, sentencias presentes, tres casos por propuesta, IDs únicos y anclas resueltas. Logo copiado con hash SHA-256 idéntico al original. Instalación sin vulnerabilidades reportadas. La revisión visual y la interacción real por teclado en navegador siguen pendientes; el render estático no las sustituye.
 
@@ -141,4 +187,5 @@ Pendiente de revisión humana (las pruebas anteriores no la sustituyen):
 - Recorrer la página en un navegador real con clic, Tab, Enter y Espacio.
 - Confirmar el logo y la lectura de los diagramas en desktop.
 - Recorrer un caso que cumpla la condición y otro que no, en cada flujo, y poder explicarlos.
+- Revisar los «Supuesto AACMP» de los seis recorridos, probar ambos temas y la animación del hero, y usar la interacción en un teléfono real.
 - Antes de la entrega, registrar integrantes, aportes, revisión cruzada y comprobar los enlaces públicos sin sesión.
