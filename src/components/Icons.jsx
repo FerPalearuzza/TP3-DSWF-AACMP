@@ -14,6 +14,11 @@ const PATHS = {
   flag: 'M6 21V4M6 5h11l-2 4 2 4H6',
   alert: 'M12 4l9 16H3zM12 10v4M12 17.2v.1',
   rule: 'M7 3h7l4 4v14H7zM14 3v4h4M10 12h5M10 16h5',
+  sun: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4',
+  moon: 'M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z',
+  arrowLeft: 'M19 12H5M11 6l-6 6 6 6',
+  close: 'M6 6l12 12M18 6L6 18',
+  compass: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM15.5 8.5l-2 5-5 2 2-5z',
 };
 
 export function Icon({ name, size = 18 }) {

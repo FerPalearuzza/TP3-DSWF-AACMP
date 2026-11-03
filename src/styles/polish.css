@@ -27,6 +27,16 @@ a { transition: color var(--ease); }
 .header nav a:hover { background: var(--orange-tint); color: var(--accent-text); }
 .team-label { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; background: var(--surface-chip); color: #fff; border-radius: var(--r-chip); font-size: 12px; font-weight: 700; letter-spacing: 1px; }
 .team-label .icon { color: #ffb08c; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+
+/* Selector de tema: píldora con sol y luna; en móvil, botón de un ícono */
+button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.theme-toggle { position: relative; display: inline-flex; align-items: center; justify-content: space-between; flex-shrink: 0; width: 76px; height: 42px; padding: 0 3px; background: var(--toggle-bg); border: 1px solid var(--line); border-radius: 999px; color: var(--text-detail); cursor: pointer; transition: border-color var(--ease); }
+.theme-toggle:hover { border-color: var(--line-strong); }
+.theme-thumb { position: absolute; top: 4px; left: 4px; width: 32px; height: 32px; background: var(--paper); border-radius: 50%; box-shadow: var(--shadow-s); transition: transform var(--ease); }
+.theme-toggle[aria-pressed='true'] .theme-thumb { transform: translateX(34px); }
+.theme-icon { position: relative; display: grid; place-items: center; width: 34px; height: 34px; }
+.theme-toggle[aria-pressed='false'] .theme-sun, .theme-toggle[aria-pressed='true'] .theme-moon { color: var(--accent-text); }
 
 /* Hero */
 .hero { padding-top: 48px; }
@@ -129,7 +139,10 @@ details[open] > summary .toggle-v { transform: scaleY(0); }
   .wordmark-logo { width: 36px; height: 36px; }
   .header .wordmark { gap: 8px; }
   .header nav { gap: 0; font-size: 12px; }
-  .header nav a { padding: 8px 7px; }
+  .header nav a { padding: 8px 5px; white-space: nowrap; }
+  .theme-toggle { justify-content: center; width: 44px; height: 44px; padding: 0; }
+  .theme-thumb { display: none; }
+  .theme-toggle[aria-pressed='false'] .theme-moon, .theme-toggle[aria-pressed='true'] .theme-sun { display: none; }
   .hero { padding-top: 26px; }
   h1 { font-size: 15.5vw; }
   .logo-frame { width: min(84%, 280px); }
@@ -147,6 +160,11 @@ details[open] > summary .toggle-v { transform: scaleY(0); }
   .scope { padding: 28px 22px; margin-block: 36px 44px; }
   .footer { border-radius: 22px 22px 0 0; }
   .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+/* Pantallas muy angostas: la navegación baja a una segunda fila para que nada se desborde */
+@media (max-width: 389px) {
+  .header { flex-wrap: wrap; row-gap: 2px; }
+  .header nav { order: 3; width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
