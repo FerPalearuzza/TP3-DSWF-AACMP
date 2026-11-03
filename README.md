@@ -46,8 +46,8 @@ npm run preview
 
 Compatible con un proyecto Vite estático en Vercel: comando `npm run build`, directorio de salida `dist`. No necesita variables de entorno ni configuración de rutas SPA: la navegación usa anclas de la misma página. Todavía no se publicó.
 
-- Repositorio público: pendiente de completar por el equipo.
-- Landing publicada: pendiente.
+- Repositorio público: https://github.com/FerPalearuzza/TP3-DSWF-AACMP
+- Landing publicada: https://tp-3-dswf-aacmp.vercel.app/
 
 ## Participación y construcción agéntica
 
