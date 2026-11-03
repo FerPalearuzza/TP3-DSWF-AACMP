@@ -82,7 +82,7 @@ function Legend() {
     <li><svg viewBox="0 0 30 18" aria-hidden="true"><polygon className="flow-swatch" points="15,1 29,9 15,17 1,9" /></svg>Decisión</li>
     <li><svg viewBox="0 0 30 18" aria-hidden="true"><rect className="flow-swatch-action" x="1" y="2" width="28" height="14" /></svg>Acción</li>
     <li><svg viewBox="0 0 30 18" aria-hidden="true"><rect className="flow-swatch-human" x="1" y="1" width="28" height="16" /><rect className="flow-swatch-human" x="4" y="4" width="22" height="10" /></svg>Persona (siempre AACMP)</li>
-    <li><svg viewBox="0 0 30 18" aria-hidden="true"><line className="flow-swatch-rule" x1="1" y1="9" x2="29" y2="9" /></svg>Naranja o negro, rótulo R3/R4: regla original</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><line className="flow-swatch-rule" x1="1" y1="9" x2="29" y2="9" /></svg>Naranja o alto contraste, rótulo R3/R4: regla original</li>
     <li><svg viewBox="0 0 30 18" aria-hidden="true"><line className="flow-swatch-aacmp" x1="1" y1="9" x2="29" y2="9" /></svg>Verde o rótulo AACMP: agregado del equipo</li>
   </ul>;
 }
