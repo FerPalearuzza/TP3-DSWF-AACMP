@@ -62,7 +62,7 @@ h1 em { font-style: italic; }
 .logo-frame { position: relative; display: grid; place-items: center; width: var(--frame-w); aspect-ratio: 1; margin: 0 auto; background: #fff; border-radius: 50%; box-shadow: 0 0 0 6px rgba(255, 255, 255, .08), 0 0 0 8px rgba(250, 105, 43, .7), 0 26px 60px -8px rgba(230, 75, 22, .6); }
 .logo-frame { overflow: hidden; }
 .logo-frame img { width: 100%; }
-.art-bottom { font-size: 10px; }
+.art-bottom { color: var(--art-note); font-size: 10px; }
 .art-bottom strong { font-size: 14px; }
 .jersey-number { font-family: var(--display); font-size: 76px; font-style: italic; font-weight: 800; letter-spacing: 0; line-height: .8; }
 
@@ -176,6 +176,8 @@ details[open] > summary .toggle-v { transform: scaleY(0); }
 @media (max-width: 389px) {
   .header { flex-wrap: wrap; row-gap: 2px; }
   .header nav { order: 3; width: 100%; }
+  /* El resplandor del disco llega hasta este texto: se aclara para sostener 4,5:1. */
+  .art-bottom { color: #d4d6cb; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

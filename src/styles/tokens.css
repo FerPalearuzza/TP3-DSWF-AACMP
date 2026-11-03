@@ -29,6 +29,7 @@
   --surface-ink: #191a18;
   --surface-chip: #191a18;
   --surface-edge: transparent;
+  --art-note: #b4b6a9;
 
   /* Acento */
   --orange: #e64b16;
@@ -104,6 +105,7 @@
   --surface-ink: #1f2225;
   --surface-chip: #2f3338;
   --surface-edge: #3a3f44;
+  --art-note: #d4d6cb;
 
   --orange: #ff7a3d;
   --orange-tint: #3d2417;
