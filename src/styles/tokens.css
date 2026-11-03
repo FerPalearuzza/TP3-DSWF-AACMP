@@ -1,0 +1,149 @@
+/* Variables semánticas de color. Se cargan antes que el resto de los estilos.
+   El tema lo fija index.html antes de pintar; ThemeToggle.jsx lo cambia a pedido.
+   Claro: valores originales de la landing. Oscuro: grafito, sin invertir colores. */
+:root {
+  color-scheme: light;
+
+  /* Base */
+  --bg: #f6f4ee;
+  --paper: #fffdf8;
+  --tile: #f6f4ee;
+  --line: #d8d6ce;
+  --line-strong: #bdbbb0;
+  --header-bg: rgba(255, 253, 248, .9);
+  --selection: #ffd1af;
+  --focus: #a63208;
+
+  /* Texto */
+  --text: #24251f;
+  --text-strong: #191a18;
+  --text-heading: #282d24;
+  --text-body: #55564e;
+  --text-detail: #55584d;
+  --text-section: #626358;
+  --text-meta: #67685e;
+  --text-note: #68695f;
+  --text-hero-note: #5f6055;
+
+  /* Bloques oscuros en ambos temas: panel del logo, marcador y footer */
+  --surface-ink: #191a18;
+  --surface-chip: #191a18;
+  --surface-edge: transparent;
+
+  /* Acento */
+  --orange: #e64b16;
+  --orange-solid: #d64212;
+  --orange-press: #a63208;
+  --orange-tint: #fbe6da;
+  --accent-text: #9e310c;
+  --toggle-bg: #f1efe7;
+  --toggle-on-bg: #9e310c;
+  --toggle-on-ink: #fff;
+
+  /* Decisiones AACMP */
+  --aacmp-text: #355849;
+  --aacmp-tint: #e4ece5;
+  --aacmp-box-text: #2c4a3d;
+
+  /* Diagramas */
+  --canvas: #f9f7f1;
+  --canvas-dot: rgba(25, 26, 24, .09);
+  --canvas-inset: rgba(70, 45, 20, .07);
+  --node-bg: #fffdf8;
+  --node-text: #191a18;
+  --node-shadow: rgba(70, 45, 20, .13);
+  --data-stroke: #191a18;
+  --kicker-rule: #9e310c;
+  --kicker-data: #3f4337;
+  --edge: #33342f;
+  --edge-label-bg: #fff;
+  --edge-label-line: #c9c7bc;
+  --aacmp-stroke: #355849;
+  --action-rule-bg: #fde6d8;
+  --action-aacmp-bg: #e4ece5;
+  --human-bg: #fbeecb;
+  --human-ink: #3d2f00;
+  --result-rule-bg: #191a18;
+  --result-rule-text: #fff;
+  --result-rule-kicker: #f1f2ea;
+  --result-aacmp-bg: #355849;
+  --result-aacmp-text: #fff;
+  --result-aacmp-kicker: #f1f2ea;
+  --flow-mark: rgba(245, 190, 40, .55);
+  --flow-trace: #191a18;
+  --flow-trace-ink: #fff;
+
+  /* Sombras */
+  --shadow-s: 0 1px 2px rgba(70, 45, 20, .08);
+  --shadow-m: 0 1px 2px rgba(70, 45, 20, .07), 0 10px 26px -14px rgba(70, 45, 20, .24);
+  --shadow-l: 0 2px 4px rgba(25, 26, 24, .12), 0 28px 56px -26px rgba(25, 26, 24, .55);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #16181a;
+  --paper: #1f2225;
+  --tile: #272b2f;
+  --line: #3a3f44;
+  --line-strong: #5a6066;
+  --header-bg: rgba(31, 34, 37, .9);
+  --selection: #6b3a20;
+  --focus: #ffb08c;
+
+  --text: #f2efe8;
+  --text-strong: #f2efe8;
+  --text-heading: #f2efe8;
+  --text-body: #b6b4aa;
+  --text-detail: #b6b4aa;
+  --text-section: #b6b4aa;
+  --text-meta: #b6b4aa;
+  --text-note: #b6b4aa;
+  --text-hero-note: #b6b4aa;
+
+  --surface-ink: #1f2225;
+  --surface-chip: #2f3338;
+  --surface-edge: #3a3f44;
+
+  --orange: #ff7a3d;
+  --orange-tint: #3d2417;
+  --accent-text: #ff8a52;
+  --toggle-bg: #2f3338;
+  --toggle-on-bg: #ff7a3d;
+  --toggle-on-ink: #16181a;
+
+  --aacmp-text: #7fc4a0;
+  --aacmp-tint: #1e3329;
+  --aacmp-box-text: #cfe6d8;
+
+  --canvas: #191b1e;
+  --canvas-dot: rgba(242, 239, 232, .07);
+  --canvas-inset: rgba(0, 0, 0, .35);
+  --node-bg: #272b2f;
+  --node-text: #f2efe8;
+  --node-shadow: rgba(0, 0, 0, .4);
+  --data-stroke: #b6b4aa;
+  --kicker-rule: #ff8a52;
+  --kicker-data: #b6b4aa;
+  --edge: #a9aca6;
+  --edge-label-bg: #272b2f;
+  --edge-label-line: #4a5056;
+  --aacmp-stroke: #7fc4a0;
+  --action-rule-bg: #3d2417;
+  --action-aacmp-bg: #1e3329;
+  --human-bg: #3a3015;
+  --human-ink: #f0d58a;
+  --result-rule-bg: #f2efe8;
+  --result-rule-text: #16181a;
+  --result-rule-kicker: #16181a;
+  --result-aacmp-bg: #2f6b52;
+  --result-aacmp-text: #fff;
+  --result-aacmp-kicker: #fff;
+  --flow-mark: rgba(245, 190, 40, .32);
+  --flow-trace: #f2efe8;
+  --flow-trace-ink: #16181a;
+
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-m: 0 1px 2px rgba(0, 0, 0, .35), 0 10px 26px -14px rgba(0, 0, 0, .7);
+  --shadow-l: 0 2px 4px rgba(0, 0, 0, .35), 0 28px 56px -26px rgba(0, 0, 0, .85);
+}
