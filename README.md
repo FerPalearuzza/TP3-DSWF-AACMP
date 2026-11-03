@@ -180,11 +180,25 @@ Verificación automatizada de la pasada de suavidad, en las mismas condiciones. 
 - **En reposo:** la página completa tiene 0 píxeles distintos respecto del commit `296e66b`, en ambos temas y a 1920, 1366, 390 y 320 px. El hover del hero tampoco altera el texto de la página.
 - **Fundidos:** el resaltado y la atenuación pasan por valores intermedios. Cruzar el hueco entre dos nodos no apaga el resaltado.
 - **Lienzo:** tocar un nodo visible no lo mueve. A 390 px, en el recorrido positivo de R3, se mueve en 7 de 9 cambios de paso y el nodo activo queda siempre a la vista, sin mover la página. Tocar el lienzo cancela el deslizamiento.
-- **Panel móvil:** altura estable en todos los pasos probados (360 px a 390 px y 320 px a 320 px), controles siempre visibles, aviso de más contenido y cada paso arranca arriba. A 320 px todos los pasos del caso límite de R4 desbordan, así que hay que desplazar el panel para leerlos completos. A 1366 px la altura varía 2 px.
+- **Panel móvil:** altura estable en todos los pasos, controles siempre visibles, aviso de más contenido y cada paso arranca arriba. A 1366 px la altura varía 2 px. Los valores vigentes están en el ajuste siguiente.
 - **Hero:** en reposo no corre ninguna animación. Con movimiento reducido no hay giro ni inclinación.
 - **Fluidez:** con la CPU 4 veces más lenta en Chrome headless, la mediana y el percentil 95 quedan en unos 17 ms por cuadro. Es una medición de escritorio emulada, no de un teléfono real.
 
 La impresión visual de suavidad la debe confirmar una persona: estas pruebas miden valores, no percepción.
+
+Ajuste del panel móvil: según lo informado en la sesión, el equipo aprobó la pasada anterior y pidió revisar solo el panel, porque el degradado tapaba parte del supuesto. Lo realizó la sesión principal de Claude Code (Claude Opus 5.5), sin subagentes. Medido en los 58 pasos de los seis recorridos, antes y después:
+
+| Pantalla | Alto del panel | Área de lectura | Pasos legibles sin desplazar | Texto tapado |
+|---|---|---|---|---|
+| 320×568 | 284 → 261 px | 123 → 142 px | 0 → 6 | 40 → 0 px |
+| 320×640 | 320 → 294 px | 159 → 175 px | 6 → 30 | 40 → 0 px |
+| 360×640 | 320 → 294 px | 159 → 175 px | 14 → 38 | 40 → 0 px |
+| 390×844 | 360 → 320 px | 199 → 201 px | 45 → 46 | 40 → 0 px |
+
+- **Cambios:** el aviso «Más abajo» ocupa su propia línea y ya no se superpone al texto. Los tres controles entran en una fila, de 44 px de alto, porque en móvil el botón muestra «Salir»; su nombre accesible sigue siendo «Salir del recorrido».
+- **Paneles de nodo:** conservan su altura anterior, porque achicarlos aumentaba los que debían desplazarse (de 13 a 19 de 36 a 320 px). Con su altura anterior, la cantidad no empeora y no hay texto tapado.
+- **Pruebas:** con teclado, la zona desplazable se enfoca con nombre y foco visible, y las flechas mueven el panel, no la página. Con eventos táctiles emulados, deslizar llega al final del texto sin mover la página. Se repitieron build, grafo, 20 escenarios, 6 recorridos, temas, `axe-core` y contraste, sin fallos.
+- **Sin cambios:** en reposo, 0 píxeles distintos respecto del commit `35119df` en ambos temas y los cuatro anchos. Con el panel activo a 1366 px difieren 49 píxeles, un solo glifo de «Salir».
 
 Limitaciones conocidas:
 

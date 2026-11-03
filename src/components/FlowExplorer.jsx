@@ -34,7 +34,7 @@ function ScrollArea({ resetKey, label, children }) {
   }, [measure]);
   return <div className={`explorer-scroll-wrap${state.more ? ' has-more' : ''}`}>
     <div className="explorer-scroll" ref={areaRef} onScroll={measure} tabIndex={state.overflow ? 0 : undefined} role={state.overflow ? 'group' : undefined} aria-label={state.overflow ? label : undefined}>{children}</div>
-    <span className="explorer-more" aria-hidden="true"><Icon name="arrowDown" size={16} /></span>
+    <span className="explorer-more" aria-hidden="true"><span className="explorer-more-text">Más abajo</span><Icon name="arrowDown" size={16} /></span>
   </div>;
 }
 
@@ -64,7 +64,7 @@ function RouteStep({ route, step, flowCase, rule, onStep, onExit }) {
     <div className="explorer-actions">
       <button className="explorer-button" type="button" aria-disabled={isFirst} onClick={() => { if (!isFirst) onStep(-1); }}><Icon name="arrowLeft" size={16} />Anterior</button>
       <button className="explorer-button explorer-next" type="button" data-next aria-disabled={isLast} onClick={() => { if (!isLast) onStep(1); }}>Siguiente<Icon name="arrowRight" size={16} /></button>
-      <button className="explorer-button" type="button" onClick={onExit}><Icon name="close" size={16} />Salir del recorrido</button>
+      <button className="explorer-button" type="button" aria-label="Salir del recorrido" onClick={onExit}><Icon name="close" size={16} /><span>Salir<span className="explorer-long"> del recorrido</span></span></button>
     </div>
   </div>;
 }
@@ -107,7 +107,7 @@ export default function FlowExplorer({ flow, rule, cases, walkthroughs, selected
   const outgoing = node ? flow.edges.filter(edge => edge.from === node.id) : [];
   const announcement = tour ? routeAnnouncement({ route, step: tour.step, flowCase, rule }) : node ? `${kicker(node, rule)}: ${nodeText(node)}` : '';
 
-  return <div ref={panelRef} className={`flow-explorer${node || tour ? ' is-active' : ''}`} role="group" aria-label={`Explorar el diagrama ${rule}`} onKeyDown={onKeyDown}>
+  return <div ref={panelRef} className={`flow-explorer${node || tour ? ' is-active' : ''}${node ? ' is-node' : ''}`} role="group" aria-label={`Explorar el diagrama ${rule}`} onKeyDown={onKeyDown}>
     <p className="visually-hidden" aria-live="polite" aria-atomic="true">{announcement}</p>
     {!node && !tour && <div className="explorer-idle">
       <div className="explorer-intro"><h4><Icon name="compass" size={17} />Explorar el diagrama</h4><p>Pasá el cursor, hacé clic o tocá un nodo para resaltar sus conexiones directas.</p>
