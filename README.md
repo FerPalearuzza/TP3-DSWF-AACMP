@@ -38,6 +38,7 @@ npm run preview
 - `src/components/ThemeToggle.jsx`: selector de tema; `index.html` fija el tema antes de pintar.
 - `src/components/FlowExplorer.jsx`: panel HTML de exploración y recorridos, equivalente de teclado y lector de pantalla del SVG.
 - `src/components/flowText.js`: textos y resaltados derivados del grafo.
+- `src/components/canvasScroll.js`: desplazamiento horizontal del lienzo, solo cuando hace falta.
 - `src/data/walkthroughs.js`: salida de cada decisión en los seis recorridos; la ruta se calcula con las aristas de `flows.js`.
 - `src/styles/tokens.css`: variables semánticas de color de ambos temas.
 - `src/components/StartupIntro.jsx`: presentación y logo original.
@@ -147,6 +148,18 @@ Problemas detectados por las pruebas y corregidos:
 - A 320 px los controles del recorrido podían quedar fuera de vista; ahora quedan fijos dentro del panel.
 - «IDENTIDAD ORIGINAL» sobre el resplandor del logo bajaba a 4,00:1 en oscuro y a 4,33:1 en claro a 320 px; este último valor ya existía antes de esta etapa. Se aclaró ese texto en oscuro y por debajo de 390 px.
 
+### Pasada de suavidad e interacción (rama `marianoa`)
+
+Según lo informado en la sesión, el equipo revisó la versión anterior en video y pidió suavizar los diagramas, dar más vida al hover del balón y mejorar el panel móvil. Lo realizó la sesión principal de Claude Code (Claude Opus 5.5), sin subagentes. No cambian las sentencias, la lógica, `flows.js`, `proposals.js`, `walkthroughs.js` ni el logo.
+
+- **Diagramas:** la capa de resaltado queda siempre montada y se funde en 240 ms, en lugar de aparecer de golpe. Cruzar el hueco entre dos nodos ya no apaga el resaltado.
+- **Lienzo:** se desliza solo si el nodo activo está fuera o a menos de 56 px del borde, y se detiene si la persona lo toma. Reemplaza al centrado en cada cambio.
+- **Panel:** microfundido del contenido, barra de progreso y controles que no parpadean. En móvil tiene altura fija, con zona desplazable y una flecha que avisa si hay más contenido.
+- **Hero:** al pasar el cursor por el disco aparecen un aro naranja que gira solo durante el hover, más resplandor, inclinación de hasta 4° y un brillo que cruza el balón una vez. Son capas aparte: el archivo del logo no se modifica.
+- **Segunda capa recortada del balón:** se descartó sin probarla. En la imagen, el balón está tapado por llamas y por la banda «FYV», así que girar un recorte rompería esos bordes.
+
+Problema detectado por las pruebas y corregido: `mix-blend-mode` en una capa invisible cambiaba el suavizado del texto de toda la página aun en reposo. La mezcla ahora existe solo durante el hover y aislada dentro del disco.
+
 ## Revisión del equipo
 
 Verificación automatizada de la etapa «Tablero táctico», ejecutada por el agente en Chrome headless sobre el build de producción. Los scripts quedaron fuera del repositorio:
@@ -162,10 +175,22 @@ Verificación automatizada de la etapa «Tablero táctico», ejecutada por el ag
 - **Movimiento reducido:** estado final inmediato, sin animaciones ni transiciones. Los recorridos no avanzan solos.
 - **Tema claro:** comparada con el commit `58737a5`, quitando solo el header, el panel nuevo y el texto de la leyenda, la página completa tiene 0 píxeles distintos a 1920, 1366 y 390 px. A 320 px difieren 453 píxeles, en la zona de «IDENTIDAD ORIGINAL», por la corrección de contraste.
 
+Verificación automatizada de la pasada de suavidad, en las mismas condiciones. Se repitieron las pruebas anteriores sobre el build final, con los mismos resultados en build, grafo, 20 escenarios, 6 recorridos, teclado, temas, `axe-core` y contraste. Además:
+
+- **En reposo:** la página completa tiene 0 píxeles distintos respecto del commit `296e66b`, en ambos temas y a 1920, 1366, 390 y 320 px. El hover del hero tampoco altera el texto de la página.
+- **Fundidos:** el resaltado y la atenuación pasan por valores intermedios. Cruzar el hueco entre dos nodos no apaga el resaltado.
+- **Lienzo:** tocar un nodo visible no lo mueve. A 390 px, en el recorrido positivo de R3, se mueve en 7 de 9 cambios de paso y el nodo activo queda siempre a la vista, sin mover la página. Tocar el lienzo cancela el deslizamiento.
+- **Panel móvil:** altura estable en todos los pasos probados (360 px a 390 px y 320 px a 320 px), controles siempre visibles, aviso de más contenido y cada paso arranca arriba. A 320 px todos los pasos del caso límite de R4 desbordan, así que hay que desplazar el panel para leerlos completos. A 1366 px la altura varía 2 px.
+- **Hero:** en reposo no corre ninguna animación. Con movimiento reducido no hay giro ni inclinación.
+- **Fluidez:** con la CPU 4 veces más lenta en Chrome headless, la mediana y el percentil 95 quedan en unos 17 ms por cuadro. Es una medición de escritorio emulada, no de un teléfono real.
+
+La impresión visual de suavidad la debe confirmar una persona: estas pruebas miden valores, no percepción.
+
 Limitaciones conocidas:
 
 - Mientras está activo, el panel queda fijo abajo y puede cubrir la parte inferior del diagrama hasta que se desplaza la página o se cierra.
-- En móvil, el lienzo solo centra el nodo en horizontal: si el nodo activo queda arriba o abajo de la pantalla, hay que desplazar la página.
+- En móvil, el lienzo solo se desplaza en horizontal: si el nodo activo queda arriba o abajo de la pantalla, hay que desplazar la página.
+- La reacción del balón requiere cursor: en pantallas táctiles no aparece, y queda la animación de entrada.
 - Esc funciona con el foco dentro del panel, no con el foco en el lienzo.
 
 Verificación técnica de etapa 2: build de producción correcto con React 19.3.1 y Vite 8.3.5; render de React comprobado con dos propuestas, diez desplegables, sentencias presentes, tres casos por propuesta, IDs únicos y anclas resueltas. Logo copiado con hash SHA-256 idéntico al original. Instalación sin vulnerabilidades reportadas. La revisión visual y la interacción real por teclado en navegador siguen pendientes; el render estático no las sustituye.

@@ -3,6 +3,7 @@ import { flows } from '../data/flows.js';
 import { buildRoute, walkthroughs } from '../data/walkthroughs.js';
 import { Icon, ToggleIcon } from './Icons.jsx';
 import FlowExplorer from './FlowExplorer.jsx';
+import { glideTo, revealTarget } from './canvasScroll.js';
 import { kicker, nodeText, sceneAround, sceneOfRoute } from './flowText.js';
 import '../styles/flow-diagram.css';
 
@@ -109,13 +110,15 @@ function TextVersion({ flow, rule }) {
 }
 
 // Capa de resaltado: se dibuja encima del diagrama completo, que nunca se oculta.
+// Queda siempre montada y sin opacidad, para que cada cambio se funda en lugar de aparecer de golpe.
 function FlowHighlight({ flow, scene, arrowId }) {
-  const nodes = flow.nodes.filter(node => scene.lit.has(node.id));
-  const edges = flow.edges.filter(edge => scene.edges.has(edge));
+  const nodeState = node => node.id === scene?.active ? 'is-active' : scene?.lit.has(node.id) ? 'is-near' : undefined;
   return <g className="flow-highlight">
-    {edges.map(edge => <path className="flow-trace-mark" key={`${edge.from}-${edge.to}-m`} d={edgePath(edge.points)} />)}
-    {edges.map(edge => <path className={`flow-trace-line${scene.drawing === edge ? ' is-drawing' : ''}`} key={`${edge.from}-${edge.to}`} d={edgePath(edge.points)} markerEnd={`url(#${arrowId})`} pathLength="1" />)}
-    {nodes.map(node => <g key={node.id} className={node.id === scene.active ? 'is-active' : 'is-near'}><Outline node={node} className="flow-halo-mark" /><Outline node={node} className="flow-halo-ring" /></g>)}
+    {flow.edges.map(edge => <g key={`${edge.from}-${edge.to}`} className={scene?.edges.has(edge) ? 'is-on' : undefined}>
+      <path className="flow-trace-mark" d={edgePath(edge.points)} />
+      <path className={`flow-trace-line${scene?.drawing === edge ? ' is-drawing' : ''}`} d={edgePath(edge.points)} markerEnd={`url(#${arrowId})`} pathLength="1" />
+    </g>)}
+    {flow.nodes.map(node => <g key={node.id} className={nodeState(node)}><Outline node={node} className="flow-halo-mark" /><Outline node={node} className="flow-halo-ring" /></g>)}
   </g>;
 }
 
@@ -136,26 +139,37 @@ export default function FlowDiagram({ proposal }) {
   const [tour, setTour] = useState(null);
   const canvasRef = useRef(null);
   const svgRef = useRef(null);
+  const hoverTimer = useRef(null);
   const route = tour ? buildRoute(flow, walkthroughs[id][tour.index]) : null;
   const scene = tour ? sceneOfRoute(route, tour.step) : sceneAround(flow, hovered ?? selected);
   const focusId = tour ? route[tour.step].node.id : selected;
 
-  // Centra el nodo elegido desplazando solo el lienzo: la página no se mueve.
+  // Desplaza solo el lienzo, y solo si el nodo activo está fuera o demasiado cerca del borde.
   useEffect(() => {
     const canvas = canvasRef.current;
     const node = flow.nodes.find(item => item.id === focusId);
-    if (!node || canvas.scrollWidth <= canvas.clientWidth) return;
+    if (!node || canvas.scrollWidth <= canvas.clientWidth) return undefined;
     const scale = svgRef.current.getBoundingClientRect().width / VIEW_WIDTH;
-    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    canvas.scrollTo({ left: node.cx * scale - canvas.clientWidth / 2, behavior: calm ? 'auto' : 'smooth' });
+    const target = revealTarget({ left: (node.cx - node.w / 2) * scale, right: (node.cx + node.w / 2) * scale, scrollLeft: canvas.scrollLeft, clientWidth: canvas.clientWidth, scrollWidth: canvas.scrollWidth });
+    return target === null ? undefined : glideTo(canvas, target);
   }, [flow, focusId]);
+
+  useEffect(() => () => clearTimeout(hoverTimer.current), []);
 
   const nodeAt = target => target.closest('[data-node]')?.dataset.node ?? null;
   // Solo el cursor resalta al pasar; en pantallas táctiles se elige con un toque.
   // Durante un recorrido el avance se controla desde el panel.
-  const onPointerOver = event => { if (event.pointerType !== 'touch' && !tour) setHovered(nodeAt(event.target)); };
+  // Al cruzar el hueco entre dos nodos el resaltado espera un instante, para no parpadear.
+  const clearHoverSoon = () => { clearTimeout(hoverTimer.current); hoverTimer.current = setTimeout(() => setHovered(null), 90); };
+  const onPointerOver = event => {
+    if (event.pointerType === 'touch' || tour) return;
+    const node = nodeAt(event.target);
+    if (!node) { clearHoverSoon(); return; }
+    clearTimeout(hoverTimer.current);
+    setHovered(node);
+  };
   const onClick = event => { if (!tour) setSelected(nodeAt(event.target)); };
-  const startTour = index => { setHovered(null); setSelected(null); setTour({ index, step: 0 }); };
+  const startTour = index => { clearTimeout(hoverTimer.current); setHovered(null); setSelected(null); setTour({ index, step: 0 }); };
   const moveTour = delta => setTour(current => ({ ...current, step: current.step + delta }));
 
   const limitCase = proposal.cases[2];
@@ -170,7 +184,7 @@ export default function FlowDiagram({ proposal }) {
     <Legend />
     <p className="flow-scroll-hint" aria-hidden="true">Deslizá hacia los costados para ver todo el diagrama <Icon name="arrowRight" size={15} /></p>
     <div className="flow-canvas" ref={canvasRef} tabIndex="0" role="region" aria-label={`Diagrama de flujo de ${rule}, desplazable en pantallas angostas`}>
-      <svg className={`flow-svg${scene ? ' is-lit' : ''}${tour ? ' is-touring' : ''}`} ref={svgRef} viewBox={`0 0 ${VIEW_WIDTH} ${flow.height}`} role="img" aria-labelledby={svgTitleId} aria-describedby={svgDescId} onPointerOver={onPointerOver} onPointerLeave={() => setHovered(null)} onClick={onClick}>
+      <svg className={`flow-svg${scene ? ' is-lit' : ''}${tour ? ' is-touring' : ''}`} ref={svgRef} viewBox={`0 0 ${VIEW_WIDTH} ${flow.height}`} role="img" aria-labelledby={svgTitleId} aria-describedby={svgDescId} onPointerOver={onPointerOver} onPointerLeave={clearHoverSoon} onClick={onClick}>
         <title id={svgTitleId}>{`Diagrama de flujo de ${rule}: ${flow.title}`}</title>
         <desc id={svgDescId}>{flow.description}</desc>
         <defs>
@@ -178,7 +192,7 @@ export default function FlowDiagram({ proposal }) {
           <marker id={traceArrowId} markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path className="flow-trace-head" d="M0 0 13 6.5 0 13z" /></marker>
         </defs>
         {flow.edges.map(edge => <path className={`flow-edge${scene && !scene.edges.has(edge) ? ' is-dim' : ''}`} key={`${edge.from}-${edge.to}`} d={edgePath(edge.points)} markerEnd={`url(#${arrowId})`} />)}
-        {scene && <FlowHighlight flow={flow} scene={scene} arrowId={traceArrowId} />}
+        <FlowHighlight flow={flow} scene={scene} arrowId={traceArrowId} />
         {flow.nodes.map(node => <FlowNode key={node.id} node={node} rule={rule} dim={scene && !scene.lit.has(node.id)} />)}
         {flow.notes?.map(note => <FlowNote key={nodeText(note)} note={note} />)}
         {flow.edges.filter(edge => edge.label).map(edge => <EdgeLabel key={`${edge.from}-${edge.to}`} edge={edge} />)}

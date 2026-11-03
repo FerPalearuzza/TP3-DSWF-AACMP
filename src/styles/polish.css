@@ -59,7 +59,8 @@ h1 em { font-style: italic; }
 .court { position: absolute; top: 50%; left: 50%; width: 100%; aspect-ratio: 1; overflow: visible; transform: translate(-50%, -50%); fill: none; stroke: #fff; stroke-opacity: .17; stroke-width: 2; }
 .court * { stroke-dasharray: 1; animation: court-draw 1.1s cubic-bezier(.3, .6, .2, 1) both; }
 @keyframes court-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-.logo-frame { position: relative; display: grid; place-items: center; width: var(--frame-w); aspect-ratio: 1; margin: 0 auto; background: #fff; border-radius: 50%; box-shadow: 0 0 0 6px rgba(255, 255, 255, .08), 0 0 0 8px rgba(250, 105, 43, .7), 0 26px 60px -8px rgba(230, 75, 22, .6); }
+.logo-hot { position: relative; width: var(--frame-w); margin: 0 auto; border-radius: 50%; }
+.logo-frame { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; margin: 0 auto; background: #fff; border-radius: 50%; box-shadow: 0 0 0 6px rgba(255, 255, 255, .08), 0 0 0 8px rgba(250, 105, 43, .7), 0 26px 60px -8px rgba(230, 75, 22, .6); }
 .logo-frame { overflow: hidden; }
 .logo-frame img { width: 100%; }
 .art-bottom { color: var(--art-note); font-size: 10px; }
@@ -75,6 +76,29 @@ h1 em { font-style: italic; }
 .jersey-digit + .jersey-digit { animation-delay: 1080ms; }
 @keyframes logo-land { 0% { transform: scale(.9); } 62% { transform: scale(1.035); } 100% { transform: scale(1); } }
 @keyframes logo-flash { 0% { opacity: 0; } 35% { opacity: 1; } 100% { opacity: 0; } }
+/* Reacción al cursor sobre el disco: aro que gira solo mientras dura el hover, resplandor, leve
+   inclinación y un brillo que cruza el balón una vez. El logo no cambia: todo son capas aparte. */
+.logo-orbit, .logo-glint { position: absolute; pointer-events: none; opacity: 0; }
+.logo-orbit { top: 50%; left: 50%; width: calc(var(--frame-w) + 34px); aspect-ratio: 1; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255, 154, 110, 0) 0 8%, rgba(250, 105, 43, .9) 36%, #ffd0b5 44%, rgba(255, 154, 110, 0) 45% 58%, rgba(250, 105, 43, .75) 86%, #ffd0b5 94%, rgba(255, 154, 110, 0) 95%); -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); mask: radial-gradient(closest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); translate: -50% -50%; transition: opacity 280ms ease-out; animation: orbit-spin 3.4s linear infinite paused; }
+.logo-glint { top: 34.4%; left: 52.5%; width: 37%; aspect-ratio: 1; overflow: hidden; border-radius: 50%; translate: -50% -50%; }
+.logo-glint::after { content: ''; position: absolute; inset: -20% -60%; background: linear-gradient(105deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, .8) 50%, rgba(255, 255, 255, 0) 60%); transform: translateX(-70%); }
+.court { transition: stroke-opacity 280ms ease-out; }
+.logo-stage::before { transition: opacity 280ms ease-out; }
+@media (hover: hover) {
+  .logo-hot:hover ~ .logo-orbit { opacity: 1; animation-play-state: running; }
+  .logo-stage:has(.logo-hot:hover)::before { opacity: .42; }
+  .logo-stage:has(.logo-hot:hover) .court { stroke-opacity: .32; }
+  /* La mezcla existe solo durante el hover y aislada en el disco: en reposo no afecta el resto de la página. */
+  .logo-hot:hover .logo-frame { isolation: isolate; }
+  .logo-hot:hover .logo-glint { opacity: 1; mix-blend-mode: overlay; }
+  .logo-hot:hover .logo-glint::after { animation: glint-sweep 900ms cubic-bezier(.3, .6, .3, 1) 60ms both; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .logo-frame { transition: transform 240ms cubic-bezier(.2, .7, .3, 1), box-shadow 280ms ease-out; }
+  .logo-hot:hover .logo-frame { box-shadow: 0 0 0 6px rgba(255, 255, 255, .1), 0 0 0 8px rgba(250, 105, 43, .9), 0 30px 70px -6px rgba(230, 75, 22, .8); transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-4px); }
+}
+@keyframes orbit-spin { to { rotate: 360deg; } }
+@keyframes glint-sweep { to { transform: translateX(70%); } }
 @keyframes score-in { from { clip-path: inset(0 -20% 100% -20%); transform: translateY(45%); } to { clip-path: inset(-20%); transform: none; } }
 
 /* Banda del hero: marcador */
