@@ -53,7 +53,16 @@ const FLOWS = {
         ],
         no: [
           { type: 'process', label: 'R4 no determina el siguiente paso', sub: 'El agente no confirma ni cancela la inscripción · AACMP' },
-          { type: 'end',     label: 'Fin · Estado sin modificación', sub: 'AACMP · Fuera del alcance de R4' },
+          { type: 'decision', label: '¿Inscripción pendiente con el pago ya confirmado? · AACMP' },
+          {
+            type: 'fork',
+            yes: [
+              { type: 'human', label: 'Derivar a una persona', sub: 'AACMP · Un operador verifica el pago y decide si confirma la inscripción' },
+              { type: 'end',   label: 'Fin · Confirmación derivada a una persona', sub: 'AACMP' },
+            ],
+            no:  [{ type: 'end', label: 'Fin · Estado sin modificación', sub: 'AACMP · Fuera del alcance de R4' }],
+            yesLabel: 'SÍ · Ya pagó', noLabel: 'NO',
+          },
         ],
         yesLabel: 'SÍ · Se cumple R4', noLabel: 'NO',
       },
