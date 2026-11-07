@@ -1,8 +1,213 @@
-// Punto de extensión para los diagramas SVG definitivos de la etapa 3.
-// No representa todavía nodos, decisiones ni conexiones del flujo.
+import { useEffect, useRef, useState } from 'react';
+import { flows } from '../data/flows.js';
+import { buildRoute, walkthroughs } from '../data/walkthroughs.js';
+import { Icon, ToggleIcon } from './Icons.jsx';
+import FlowExplorer from './FlowExplorer.jsx';
+import { glideTo, revealTarget } from './canvasScroll.js';
+import { kicker, nodeText, sceneAround, sceneOfRoute } from './flowText.js';
+import '../styles/flow-diagram.css';
+
+const LINE_HEIGHT = 16;
+const KICKER_HEIGHT = 14;
+
+const CORNER = 10;
+const VIEW_WIDTH = 1180;
+
+// Convierte la ruta ortogonal de una arista en un trazo con esquinas redondeadas.
+function edgePath(points) {
+  return points.map(([x, y], index) => {
+    if (index === 0) return `M${x} ${y}`;
+    const next = points[index + 1];
+    if (!next) return `L${x} ${y}`;
+    const [px, py] = points[index - 1];
+    const inX = Math.sign(x - px), inY = Math.sign(y - py), outX = Math.sign(next[0] - x), outY = Math.sign(next[1] - y);
+    return `L${x - inX * CORNER} ${y - inY * CORNER}Q${x} ${y} ${x + outX * CORNER} ${y + outY * CORNER}`;
+  }).join('');
+}
+
+// Contorno del nodo. También se usa, sin relleno, para el resaltado que va detrás.
+function Outline({ node, className }) {
+  const { type, cx, cy, w, h } = node;
+  const x = cx - w / 2;
+  const y = cy - h / 2;
+  if (type === 'decision') return <polygon className={className} points={`${cx},${y} ${x + w},${cy} ${cx},${y + h} ${x},${cy}`} />;
+  if (type === 'data') {
+    const slant = 14;
+    return <polygon className={className} points={`${x + slant},${y} ${x + w},${y} ${x + w - slant},${y + h} ${x},${y + h}`} />;
+  }
+  const radius = type === 'start' || type === 'result' ? Math.min(h / 2, 30) : type === 'human' ? 12 : 10;
+  return <rect className={className} x={x} y={y} width={w} height={h} rx={radius} />;
+}
+
+function NodeShape({ node }) {
+  const { type, cx, cy, w, h } = node;
+  const x = cx - w / 2;
+  const y = cy - h / 2;
+  if (type === 'query') return <><Outline node={node} className="flow-shape" /><path className="flow-band" d={`M${x + 7} ${y}h-1a6 6 0 0 0-6 6v${h - 12}a6 6 0 0 0 6 6h1z`} /></>;
+  if (type === 'human') return <>
+    <Outline node={node} className="flow-shape" />
+    <rect className="flow-inner" x={x + 4} y={y + 4} width={w - 8} height={h - 8} rx="9" />
+    <circle className="flow-icon" cx={x + 19} cy={y + 16} r="3.4" />
+    <path className="flow-icon" d={`M${x + 12.5} ${y + 27.5}a6.5 6.5 0 0 1 13 0`} />
+  </>;
+  return <Outline node={node} className="flow-shape" />;
+}
+
+function FlowNode({ node, rule, dim }) {
+  const textX = node.type === 'query' ? node.cx + 3 : node.cx;
+  const top = node.cy - (KICKER_HEIGHT + node.lines.length * LINE_HEIGHT) / 2;
+  return <g className={`flow-node flow-${node.type} flow-${node.origin}${dim ? ' is-dim' : ''}`} data-node={node.id}>
+    <NodeShape node={node} />
+    <text className="flow-kicker" x={textX} y={top + 9} textAnchor="middle">{kicker(node, rule)}</text>
+    {node.lines.map((line, index) => <text className="flow-line" key={line} x={textX} y={top + KICKER_HEIGHT + 12 + index * LINE_HEIGHT} textAnchor="middle">{line}</text>)}
+  </g>;
+}
+
+function FlowNote({ note }) {
+  const top = note.y - (KICKER_HEIGHT + note.lines.length * LINE_HEIGHT) / 2;
+  return <g className="flow-note">
+    <text className="flow-kicker" x={note.x} y={top + 9} textAnchor="middle">NOTA · AACMP</text>
+    {note.lines.map((line, index) => <text className="flow-line" key={line} x={note.x} y={top + KICKER_HEIGHT + 12 + index * LINE_HEIGHT} textAnchor="middle">{line}</text>)}
+  </g>;
+}
+
+function EdgeLabel({ edge }) {
+  const [x, y] = edge.labelAt;
+  const width = edge.label.length * 6.4 + 10;
+  return <g>
+    <rect className="flow-label-bg" x={x - width / 2} y={y - 9} width={width} height="18" rx="9" />
+    <text className="flow-label" x={x} y={y + 4} textAnchor="middle">{edge.label}</text>
+  </g>;
+}
+
+function Legend() {
+  return <ul className="flow-legend">
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><rect className="flow-swatch-dark" x="1" y="2" width="28" height="14" rx="7" /></svg><svg viewBox="0 0 30 18" aria-hidden="true"><rect className="flow-swatch-green" x="1" y="2" width="28" height="14" rx="7" /></svg>Inicio / Resultado</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><polygon className="flow-swatch" points="6,2 29,2 24,16 1,16" /></svg>Datos</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><rect className="flow-swatch" x="1" y="2" width="28" height="14" /><rect className="flow-swatch-band" x="1" y="2" width="5" height="14" /></svg>Consulta</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><polygon className="flow-swatch" points="15,1 29,9 15,17 1,9" /></svg>Decisión</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><rect className="flow-swatch-action" x="1" y="2" width="28" height="14" /></svg>Acción</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><rect className="flow-swatch-human" x="1" y="1" width="28" height="16" /><rect className="flow-swatch-human" x="4" y="4" width="22" height="10" /></svg>Persona (siempre AACMP)</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><line className="flow-swatch-rule" x1="1" y1="9" x2="29" y2="9" /></svg>Naranja o alto contraste, rótulo R3/R4: regla original</li>
+    <li><svg viewBox="0 0 30 18" aria-hidden="true"><line className="flow-swatch-aacmp" x1="1" y1="9" x2="29" y2="9" /></svg>Verde o rótulo AACMP: agregado del equipo</li>
+  </ul>;
+}
+
+function TextVersion({ flow, rule }) {
+  const byId = Object.fromEntries(flow.nodes.map(node => [node.id, node]));
+  return <details className="flow-text">
+    <summary><Icon name="text" />Leer el recorrido como texto <ToggleIcon /></summary>
+    <div className="detail-content"><ol>{flow.nodes.map(node => {
+      const exits = flow.edges.filter(edge => edge.from === node.id);
+      return <li key={node.id}>
+        <strong>{kicker(node, rule)}:</strong> {nodeText(node)}
+        {exits.length > 0 && <ul>{exits.map(edge => <li key={edge.to}>{edge.label ?? 'Sigue en'} → {nodeText(byId[edge.to])}</li>)}</ul>}
+      </li>;
+    })}</ol>
+    {flow.notes?.map(note => <p key={nodeText(note)}><strong>Nota AACMP:</strong> {nodeText(note)}</p>)}
+    </div>
+  </details>;
+}
+
+// Capa de resaltado: se dibuja encima del diagrama completo, que nunca se oculta.
+// Queda siempre montada y sin opacidad, para que cada cambio se funda en lugar de aparecer de golpe.
+function FlowHighlight({ flow, scene, arrowId }) {
+  const nodeState = node => node.id === scene?.active ? 'is-active' : scene?.lit.has(node.id) ? 'is-near' : undefined;
+  return <g className="flow-highlight">
+    {flow.edges.map(edge => <g key={`${edge.from}-${edge.to}`} className={scene?.edges.has(edge) ? 'is-on' : undefined}>
+      <path className="flow-trace-mark" d={edgePath(edge.points)} />
+      <path className={`flow-trace-line${scene?.drawing === edge ? ' is-drawing' : ''}`} d={edgePath(edge.points)} markerEnd={`url(#${arrowId})`} pathLength="1" />
+    </g>)}
+    {flow.nodes.map(node => <g key={node.id} className={nodeState(node)}><Outline node={node} className="flow-halo-mark" /><Outline node={node} className="flow-halo-ring" /></g>)}
+  </g>;
+}
+
+// Número de paso de cada nodo recorrido, para no depender solo del color.
+function StepBadges({ flow, order }) {
+  return flow.nodes.filter(node => order.has(node.id)).map(node => {
+    const x = node.type === 'decision' ? node.cx + node.w / 4 + 6 : node.cx + node.w / 2 - 8;
+    const y = node.type === 'decision' ? node.cy - node.h / 4 - 6 : node.cy - node.h / 2 + 6;
+    return <g className="flow-badge" key={node.id}><circle cx={x} cy={y} r="11" /><text x={x} y={y + 4} textAnchor="middle">{order.get(node.id)}</text></g>;
+  });
+}
+
 export default function FlowDiagram({ proposal }) {
-  return <figure className="diagram-placeholder" aria-labelledby={`${proposal.id}-diagram-title`}>
-    <svg width="52" height="40" viewBox="0 0 52 40" fill="none" aria-hidden="true"><rect x="1" y="12" width="14" height="16" rx="3" stroke="currentColor" /><path d="M17 20h16m-4-4 4 4-4 4" stroke="currentColor" /><path d="m42 11 9 9-9 9-9-9 9-9Z" stroke="currentColor" /></svg>
-    <figcaption><h3 id={`${proposal.id}-diagram-title`}>Diagrama {proposal.rule} · Próxima etapa</h3><p>Espacio preparado para el recorrido SVG. La lógica aprobada está disponible en «Recorrido propuesto».</p></figcaption><span className="status">EN PREPARACIÓN</span>
+  const { id, rule } = proposal;
+  const flow = flows[id];
+  const [hovered, setHovered] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [tour, setTour] = useState(null);
+  const canvasRef = useRef(null);
+  const svgRef = useRef(null);
+  const hoverTimer = useRef(null);
+  const route = tour ? buildRoute(flow, walkthroughs[id][tour.index]) : null;
+  const scene = tour ? sceneOfRoute(route, tour.step) : sceneAround(flow, hovered ?? selected);
+  const focusId = tour ? route[tour.step].node.id : selected;
+
+  // Desplaza solo el lienzo, y solo si el nodo activo está fuera o demasiado cerca del borde.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const node = flow.nodes.find(item => item.id === focusId);
+    if (!node || canvas.scrollWidth <= canvas.clientWidth) return undefined;
+    const scale = svgRef.current.getBoundingClientRect().width / VIEW_WIDTH;
+    const target = revealTarget({ left: (node.cx - node.w / 2) * scale, right: (node.cx + node.w / 2) * scale, scrollLeft: canvas.scrollLeft, clientWidth: canvas.clientWidth, scrollWidth: canvas.scrollWidth });
+    return target === null ? undefined : glideTo(canvas, target);
+  }, [flow, focusId]);
+
+  useEffect(() => () => clearTimeout(hoverTimer.current), []);
+
+  const nodeAt = target => target.closest('[data-node]')?.dataset.node ?? null;
+  // Solo el cursor resalta al pasar; en pantallas táctiles se elige con un toque.
+  // Durante un recorrido el avance se controla desde el panel.
+  // Al cruzar el hueco entre dos nodos el resaltado espera un instante, para no parpadear.
+  const clearHoverSoon = () => { clearTimeout(hoverTimer.current); hoverTimer.current = setTimeout(() => setHovered(null), 90); };
+  const onPointerOver = event => {
+    if (event.pointerType === 'touch' || tour) return;
+    const node = nodeAt(event.target);
+    if (!node) { clearHoverSoon(); return; }
+    clearTimeout(hoverTimer.current);
+    setHovered(node);
+  };
+  const onClick = event => { if (!tour) setSelected(nodeAt(event.target)); };
+  const startTour = index => { clearTimeout(hoverTimer.current); setHovered(null); setSelected(null); setTour({ index, step: 0 }); };
+  const moveTour = delta => setTour(current => ({ ...current, step: current.step + delta }));
+
+  const limitCase = proposal.cases[2];
+  const headingId = `${id}-diagram-title`;
+  const svgTitleId = `${id}-diagram-svg-title`;
+  const svgDescId = `${id}-diagram-svg-desc`;
+  const arrowId = `${id}-diagram-arrow`;
+  const traceArrowId = `${id}-diagram-arrow-trace`;
+
+  return <figure className="flow" aria-labelledby={headingId}>
+    <h3 id={headingId} className="flow-title">Diagrama {rule} · {flow.title}</h3>
+    <Legend />
+    <p className="flow-scroll-hint" aria-hidden="true">Deslizá hacia los costados para ver todo el diagrama <Icon name="arrowRight" size={15} /></p>
+    <div className="flow-canvas" ref={canvasRef} tabIndex="0" role="region" aria-label={`Diagrama de flujo de ${rule}, desplazable en pantallas angostas`}>
+      <svg className={`flow-svg${scene ? ' is-lit' : ''}${tour ? ' is-touring' : ''}`} ref={svgRef} viewBox={`0 0 ${VIEW_WIDTH} ${flow.height}`} role="img" aria-labelledby={svgTitleId} aria-describedby={svgDescId} onPointerOver={onPointerOver} onPointerLeave={clearHoverSoon} onClick={onClick}>
+        <title id={svgTitleId}>{`Diagrama de flujo de ${rule}: ${flow.title}`}</title>
+        <desc id={svgDescId}>{flow.description}</desc>
+        <defs>
+          <marker id={arrowId} markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path className="flow-arrow-head" d="M0 0 10 5 0 10z" /></marker>
+          <marker id={traceArrowId} markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" refX="11" refY="6.5" orient="auto"><path className="flow-trace-head" d="M0 0 13 6.5 0 13z" /></marker>
+        </defs>
+        {flow.edges.map(edge => <path className={`flow-edge${scene && !scene.edges.has(edge) ? ' is-dim' : ''}`} key={`${edge.from}-${edge.to}`} d={edgePath(edge.points)} markerEnd={`url(#${arrowId})`} />)}
+        <FlowHighlight flow={flow} scene={scene} arrowId={traceArrowId} />
+        {flow.nodes.map(node => <FlowNode key={node.id} node={node} rule={rule} dim={scene && !scene.lit.has(node.id)} />)}
+        {flow.notes?.map(note => <FlowNote key={nodeText(note)} note={note} />)}
+        {flow.edges.filter(edge => edge.label).map(edge => <EdgeLabel key={`${edge.from}-${edge.to}`} edge={edge} />)}
+        {scene?.order && <StepBadges flow={flow} order={scene.order} />}
+      </svg>
+    </div>
+    <FlowExplorer flow={flow} rule={rule} cases={proposal.cases} walkthroughs={walkthroughs[id]} selected={selected} tour={tour} route={route} onSelect={setSelected} onClose={() => setSelected(null)} onStartTour={startTour} onStep={moveTour} onExitTour={() => setTour(null)} />
+    <figcaption className="flow-caption">
+      <div className="flow-notes">
+        <div className="flow-tile"><h4><Icon name="flag" size={16} />Caso límite</h4><p>{limitCase.input}</p><p><strong>Resultado:</strong> {limitCase.result}</p><p><strong>Límite de interpretación:</strong> {proposal.limit}</p></div>
+        <div className="flow-tile"><h4><Icon name="alert" size={16} />Excepción resuelta</h4><p>{proposal.exceptions[flow.exceptionIndex]}</p></div>
+      </div>
+      <div className="flow-assumption-box"><p className="flow-assumptions"><strong>Supuestos AACMP:</strong> todo lo marcado en verde o como AACMP lo agrega el equipo; la sentencia no lo define.</p>
+      <ul className="flow-assumption-list">{flow.assumptions.map(assumption => <li key={assumption}>{assumption}</li>)}</ul></div>
+      <TextVersion flow={flow} rule={rule} />
+    </figcaption>
   </figure>;
 }

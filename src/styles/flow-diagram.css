@@ -1,0 +1,209 @@
+/* Diagramas de flujo R3 y R4. Reutiliza la paleta definida en index.css. */
+.flow { margin: 20px 0; padding: 22px 16px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-panel); box-shadow: var(--shadow-m); }
+.flow-title { margin: 0 6px 12px; font-family: var(--display); font-size: 27px; font-weight: 700; line-height: 1.1; color: var(--text-strong); }
+
+/* Leyenda */
+.flow-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 6px 14px; padding: 0; font-size: 13px; font-weight: 500; color: var(--text-detail); }
+.flow-legend li { display: flex; align-items: center; gap: 7px; }
+.flow-legend svg { width: 30px; height: 18px; flex-shrink: 0; }
+.flow-swatch, .flow-swatch-band, .flow-swatch-dark, .flow-swatch-action, .flow-swatch-human { stroke-width: 1.3; }
+.flow-swatch { fill: var(--node-bg); stroke: var(--data-stroke); }
+.flow-swatch-band { fill: var(--data-stroke); stroke: none; }
+.flow-swatch-dark { fill: var(--result-rule-bg); stroke: none; }
+.flow-swatch-green { fill: var(--result-aacmp-bg); stroke: none; }
+.flow-swatch-action { fill: var(--action-rule-bg); stroke: var(--orange); }
+.flow-swatch-human { fill: var(--human-bg); stroke: var(--human-ink); }
+.flow-swatch-rule, .flow-swatch-aacmp { stroke-width: 2; }
+.flow-swatch-rule { stroke: var(--orange); }
+.flow-swatch-aacmp { stroke: var(--aacmp-stroke); stroke-dasharray: 5 3; }
+
+/* Lienzo: se desplaza dentro de su contenedor en pantallas angostas */
+.flow-canvas { overflow-x: auto; background-color: var(--canvas); background-image: radial-gradient(var(--canvas-dot) 1px, transparent 1.2px); background-size: 20px 20px; border: 1px solid var(--line); border-radius: 18px; box-shadow: inset 0 1px 3px var(--canvas-inset); }
+.flow-canvas:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.flow-svg { display: block; width: 100%; min-width: 980px; height: auto; }
+.flow-scroll-hint { display: none; align-items: center; gap: 6px; margin: 0 6px 8px; font-size: 13px; font-weight: 600; line-height: 1.3; color: var(--text-detail); }
+/* Por debajo de este ancho el lienzo (980px) no entra en la tarjeta, contando .wrap y la barra vertical. */
+@media (max-width: 1112px) { .flow-scroll-hint { display: flex; } }
+
+/* Aristas */
+.flow-edge { fill: none; stroke: var(--edge); stroke-width: 1.6; }
+.flow-arrow-head { fill: var(--edge); }
+.flow-label-bg { fill: var(--edge-label-bg); stroke: var(--edge-label-line); stroke-width: 1; }
+.flow-label { font-size: 11.5px; font-weight: 700; fill: var(--node-text); }
+
+/* Nodos */
+.flow-shape { stroke-width: 1.6; stroke-linejoin: round; }
+.flow-node { filter: drop-shadow(0 2px 3px var(--node-shadow)); }
+.flow-kicker { font-size: 10.5px; font-weight: 700; letter-spacing: .7px; }
+.flow-line { font-size: 13.5px; font-weight: 500; fill: var(--node-text); }
+.flow-rule .flow-kicker { fill: var(--kicker-rule); }
+.flow-aacmp .flow-kicker { fill: var(--aacmp-text); }
+
+.flow-data .flow-shape { fill: var(--node-bg); stroke: var(--data-stroke); }
+.flow-data .flow-kicker { fill: var(--kicker-data); }
+
+.flow-query .flow-shape { fill: var(--node-bg); stroke: var(--aacmp-stroke); stroke-dasharray: 6 4; }
+.flow-band { fill: var(--aacmp-stroke); }
+
+.flow-decision.flow-rule .flow-shape { fill: var(--node-bg); stroke: var(--orange); stroke-width: 2; }
+.flow-decision.flow-aacmp .flow-shape { fill: var(--node-bg); stroke: var(--aacmp-stroke); stroke-width: 2; stroke-dasharray: 6 4; }
+
+.flow-action.flow-rule .flow-shape { fill: var(--action-rule-bg); stroke: var(--orange); }
+.flow-action.flow-aacmp .flow-shape { fill: var(--action-aacmp-bg); stroke: var(--aacmp-stroke); stroke-dasharray: 6 4; }
+
+.flow-human .flow-shape { fill: var(--human-bg); stroke: var(--human-ink); }
+.flow-inner { fill: none; stroke: var(--human-ink); stroke-width: 1; }
+.flow-icon { fill: none; stroke: var(--human-ink); stroke-width: 1.8; stroke-linecap: round; }
+.flow-human .flow-kicker { fill: var(--human-ink); }
+
+.flow-start .flow-shape, .flow-result .flow-shape { stroke: none; }
+.flow-rule.flow-result .flow-shape { fill: var(--result-rule-bg); }
+.flow-aacmp.flow-start .flow-shape, .flow-aacmp.flow-result .flow-shape { fill: var(--result-aacmp-bg); }
+.flow-start .flow-kicker, .flow-aacmp.flow-result .flow-kicker { fill: var(--result-aacmp-kicker); }
+.flow-rule.flow-result .flow-kicker { fill: var(--result-rule-kicker); }
+.flow-start .flow-line, .flow-aacmp.flow-result .flow-line { fill: var(--result-aacmp-text); }
+.flow-rule.flow-result .flow-line { fill: var(--result-rule-text); }
+
+.flow-note .flow-kicker, .flow-note .flow-line { fill: var(--aacmp-text); }
+
+/* Interacción: capa opcional. Sin hover, selección ni recorrido el diagrama se ve como siempre.
+   Atenuar solo aristas y, apenas, nodos: los textos deben seguir legibles. */
+.flow-svg { --flow-fade: 240ms cubic-bezier(.3, .6, .3, 1); }
+.flow-node { cursor: pointer; transition: opacity var(--flow-fade); }
+.flow-edge { transition: opacity var(--flow-fade); }
+.flow-node.is-dim { opacity: .85; }
+.flow-edge.is-dim { opacity: .3; }
+.flow-highlight { pointer-events: none; }
+.flow-trace-mark, .flow-trace-line, .flow-halo-mark, .flow-halo-ring { opacity: 0; transition: opacity var(--flow-fade), stroke-width var(--flow-fade); }
+.flow-trace-mark { fill: none; stroke: var(--flow-mark); stroke-width: 10; stroke-linecap: round; }
+.flow-trace-line { fill: none; stroke: var(--flow-trace); stroke-width: 2.8; }
+.flow-trace-head { fill: var(--flow-trace); }
+.is-on > .flow-trace-mark, .is-on > .flow-trace-line, .is-near > .flow-halo-mark, .is-near > .flow-halo-ring, .is-active > .flow-halo-mark, .is-active > .flow-halo-ring { opacity: 1; }
+.flow-halo-mark, .flow-halo-ring { fill: none; stroke-linejoin: round; }
+.flow-halo-mark { stroke: var(--flow-mark); stroke-width: 12; }
+.flow-halo-ring { stroke: var(--flow-trace); stroke-width: 3.5; }
+.is-active > .flow-halo-mark { stroke-width: 18; }
+.is-active > .flow-halo-ring { stroke-width: 6; }
+
+/* Panel de exploración */
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.flow-explorer { position: relative; margin-top: 12px; padding: 14px 16px; background: var(--tile); border: 1px solid var(--line); border-radius: var(--r-comp); font-size: 15px; color: var(--text-detail); }
+.flow-explorer.is-active { position: sticky; bottom: 10px; z-index: 6; display: flex; flex-direction: column; max-height: 46vh; background: var(--paper); border-color: var(--line-strong); box-shadow: var(--shadow-l); }
+/* Microfundido del contenido que cambia. Los botones de control no parpadean: quedan fuera. */
+.explorer-fade { animation: explorer-fade 200ms ease-out backwards; }
+@keyframes explorer-fade { from { opacity: 0; transform: translateY(3px); } }
+/* Zona desplazable del panel: si hay más contenido abajo, se indica con un degradado y una flecha. */
+.explorer-scroll-wrap { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.explorer-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; border-radius: var(--r-chip); }
+.explorer-scroll:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+.explorer-more { position: absolute; right: 0; bottom: 0; left: 0; display: grid; place-items: end center; height: 40px; padding-bottom: 2px; background: linear-gradient(transparent, var(--paper) 70%); color: var(--accent-text); opacity: 0; pointer-events: none; transition: opacity var(--ease); }
+.has-more > .explorer-more { opacity: 1; }
+.explorer-more-text { display: none; }
+.flow-explorer h4 { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3; color: var(--text-heading); }
+.flow-explorer h5 { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: var(--text-heading); }
+.flow-explorer p { margin: 0; line-height: 1.5; }
+.flow-explorer ul { margin: 0; padding-left: 18px; }
+.flow-explorer li { line-height: 1.45; margin-bottom: 3px; }
+.explorer-idle { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.explorer-idle h4 { display: flex; align-items: center; gap: 7px; margin-bottom: 2px; }
+.explorer-idle h4 .icon { color: var(--accent-text); }
+.explorer-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.explorer-button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 8px 14px; background: var(--paper); border: 1px solid var(--line-strong); border-radius: var(--r-chip); color: var(--text-strong); font: inherit; font-size: 14px; font-weight: 600; line-height: 1.25; text-align: left; cursor: pointer; transition: background-color var(--ease), border-color var(--ease); }
+.explorer-button:hover { background: var(--orange-tint); border-color: var(--accent-text); }
+.explorer-icon { flex-shrink: 0; justify-content: center; width: 44px; padding: 0; }
+/* Escritorio: una franja baja, para tapar lo menos posible del diagrama. Móvil: columna. */
+.explorer-node { position: relative; display: flex; flex: 1; min-height: 0; flex-direction: column; padding-right: 60px; }
+.explorer-node-body { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 2fr); gap: 8px 24px; align-items: start; }
+.explorer-close { position: absolute; top: 0; right: 0; }
+.explorer-kicker { font-size: 11px; font-weight: 700; letter-spacing: .7px; }
+.explorer-rule { color: var(--accent-text); }
+.explorer-aacmp { color: var(--aacmp-text); }
+.explorer-origin { margin-top: 4px !important; font-size: 13px; font-weight: 600; }
+.explorer-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+.explorer-exits { display: grid; gap: 8px; }
+.explorer-exit { display: block; width: 100%; }
+.explorer-exit b { margin-right: 4px; color: var(--accent-text); font-weight: 800; }
+
+/* Recorridos guiados */
+.is-touring .flow-node { cursor: default; }
+.flow-trace-line.is-drawing { stroke-dasharray: 1; animation: trace-draw 340ms cubic-bezier(.3, .6, .3, 1) both; }
+@keyframes trace-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.flow-badge { pointer-events: none; transform-box: fill-box; transform-origin: center; animation: badge-in 220ms cubic-bezier(.3, 1.3, .5, 1) backwards; }
+@keyframes badge-in { from { opacity: 0; transform: scale(.6); } }
+.flow-badge circle { fill: var(--flow-trace); stroke: var(--canvas); stroke-width: 2; }
+.flow-badge text { fill: var(--flow-trace-ink); font-size: 12px; font-weight: 800; }
+.explorer-idle { align-items: flex-start; }
+.explorer-intro { flex: 1 1 300px; }
+.explorer-intro .explorer-actions { margin-top: 10px; }
+/* Progreso y controles quedan fijos; lo que cambia en cada paso se desplaza entre ellos. */
+.explorer-route { display: flex; flex: 1; min-height: 0; flex-direction: column; gap: 8px; }
+.explorer-route > .explorer-actions { flex-shrink: 0; }
+.explorer-progress { display: flex; flex-shrink: 0; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 13px; color: var(--text-heading); }
+.explorer-bar { flex-basis: 100%; height: 3px; overflow: hidden; background: var(--line); border-radius: 3px; }
+.explorer-bar::after { content: ''; display: block; height: 100%; background: var(--accent-text); border-radius: 3px; transform: scaleX(var(--progress)); transform-origin: left; transition: transform var(--flow-panel, 240ms cubic-bezier(.3, .6, .3, 1)); }
+.explorer-route-content { display: flex; flex-direction: column; gap: 8px; }
+.explorer-progress .icon { color: var(--accent-text); }
+.explorer-progress span { margin-left: auto; font-weight: 700; }
+.explorer-case { font-size: 13px; }
+.explorer-route-body { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 1.4fr); gap: 8px 24px; min-height: 88px; padding-top: 8px; border-top: 1px solid var(--line); }
+.explorer-route-notes { display: grid; gap: 6px; align-content: start; font-size: 14px; }
+.explorer-answer { color: var(--accent-text); font-weight: 800; }
+.explorer-assumption { padding: 6px 10px; background: var(--aacmp-tint); border-radius: var(--r-chip); color: var(--aacmp-box-text); }
+.explorer-result { color: var(--text-heading); }
+.explorer-next { background: var(--orange-solid); border-color: var(--orange-press); color: #fff; }
+.explorer-next:hover { background: var(--orange-press); border-color: var(--orange-press); }
+.explorer-button[aria-disabled='true'] { background: transparent; border-color: var(--line); color: var(--text-detail); cursor: not-allowed; }
+
+/* Notas y versión textual */
+.flow-caption { margin-top: 12px; font-size: 15px; color: var(--text-detail); }
+.flow-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.flow-tile { padding: 14px 16px; background: var(--tile); border-radius: var(--r-comp); }
+.flow-notes h4 { display: flex; align-items: center; gap: 7px; margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--text-heading); }
+.flow-notes h4 .icon { color: var(--accent-text); }
+.flow-notes p { margin: 0 0 6px; }
+.flow-assumption-box { margin-top: 12px; padding: 14px 16px; background: var(--aacmp-tint); border-radius: var(--r-comp); }
+.flow-assumptions { margin: 0; color: var(--aacmp-box-text); line-height: 1.5; }
+.flow-assumption-list { margin: 8px 0 0; padding-left: 20px; color: var(--aacmp-box-text); }
+.flow-assumption-list li:last-child { margin-bottom: 0; }
+.flow-assumption-list li { line-height: 1.6; margin-bottom: 4px; }
+.flow-text { margin-top: 12px; box-shadow: none; }
+.flow-text .detail-content ul { margin-top: 4px; }
+
+@media (max-width: 900px) {
+  .explorer-node { padding-right: 0; }
+  .explorer-node-body { grid-template-columns: minmax(0, 1fr); }
+  .explorer-info { padding-right: 56px; }
+  .explorer-route .explorer-info { padding-right: 0; }
+  .explorer-route-body { grid-template-columns: minmax(0, 1fr); }
+}
+/* Pantallas muy angostas: sin íconos en los controles, para que entren los tres en una fila. */
+@media (max-width: 389px) {
+  .explorer-route > .explorer-actions .icon { display: none; }
+}
+@media (max-width: 640px) {
+  .flow { padding: 16px 10px 10px; border-radius: 18px; }
+  .flow-canvas { border-radius: var(--r-comp); }
+  .flow-title { font-size: 24px; }
+  .flow-notes { grid-template-columns: 1fr; gap: 10px; }
+  .flow-explorer { padding: 12px; }
+  /* Altura fija en móvil: el contenido cambia de paso sin que el panel salte. */
+  .flow-explorer.is-active { height: min(46vh, 320px); max-height: 46vh; }
+  /* Un nodo no tiene fila de controles fija y su lista de salidas necesita más lectura. */
+  .flow-explorer.is-active.is-node { height: min(50vh, 360px); max-height: 50vh; }
+  /* El aviso de más contenido ocupa su propia línea: nunca tapa el texto. */
+  .explorer-more { position: static; display: flex; flex-shrink: 0; align-items: center; justify-content: flex-end; gap: 3px; height: 18px; padding: 2px 0 0; background: none; font-size: 12px; font-weight: 700; }
+  .explorer-more .icon { width: 14px; height: 14px; }
+  .explorer-more-text { display: inline; }
+  .explorer-long { display: none; }
+  .explorer-route { gap: 4px; }
+  .explorer-route > .explorer-actions { flex-wrap: nowrap; gap: 6px; }
+  .explorer-route > .explorer-actions .explorer-button { padding-inline: 10px; }
+  /* El rótulo del nodo ya dice si es regla o AACMP: en móvil se aprovecha ese espacio. */
+  .explorer-origin-repeat { display: none; }
+  .explorer-route-content { padding-bottom: 4px; }
+  .explorer-node-body { padding-bottom: 4px; }
+  .explorer-route-body { order: 1; min-height: 0; padding-top: 0; border-top: 0; }
+  .explorer-case { order: 2; padding-top: 8px; border-top: 1px solid var(--line); }
+  .explorer-route > .explorer-actions .explorer-button { flex: 1 1 auto; justify-content: center; }
+  .explorer-links { grid-template-columns: 1fr; }
+}
