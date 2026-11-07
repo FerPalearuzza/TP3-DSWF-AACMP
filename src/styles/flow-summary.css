@@ -1,7 +1,8 @@
-/* Vista resumida de los diagramas (FlowSummary.jsx). Estilos originales de la rama dani. */
+/* Vista resumida de los diagramas (FlowSummary.jsx). Estilos de la rama dani,
+   con los colores pasados a las variables de tokens.css para que respondan al tema. */
 .fd-figure {
   margin: 32px 0;
-  background: #fafaf5;
+  background: var(--canvas);
   border: 1px solid var(--line);
   border-radius: 4px;
   overflow: hidden
@@ -17,12 +18,12 @@
   font-weight: 800;
   letter-spacing: .5px;
   margin: 0 0 6px;
-  color: var(--ink)
+  color: var(--text-heading)
 }
 
 .fd-caption-note {
   font-size: 12px;
-  color: #6e7162;
+  color: var(--text-meta);
   margin: 0;
   line-height: 1.6
 }
@@ -57,28 +58,31 @@
 
 .fd-node span {
   font-size: 12px;
-  color: #6e7162;
+  color: var(--text-meta);
   line-height: 1.6
 }
 
 .fd-start {
-  background: var(--ink);
-  color: #f6f4ee;
+  background: var(--result-rule-bg);
+  color: var(--result-rule-text);
   text-align: center;
   border-radius: 32px
 }
 
 .fd-start span {
-  color: #b4b6a9
+  color: inherit;
+  opacity: .8
 }
 
 .fd-process {
-  background: #fff;
+  background: var(--node-bg);
+  color: var(--node-text);
   border: 1.5px solid var(--line)
 }
 
 .fd-decision {
-  background: #fff8f3;
+  background: var(--orange-tint);
+  color: var(--node-text);
   border: 2px solid var(--orange);
   text-align: center;
   gap: 8px
@@ -91,8 +95,8 @@
 }
 
 .fd-human {
-  background: #eef4ef;
-  border: 1.5px solid #b2d1b5;
+  background: var(--human-bg);
+  border: 1.5px solid var(--line-strong);
   display: flex;
   flex-direction: row;
   gap: 14px;
@@ -100,7 +104,8 @@
 }
 
 .fd-human-icon {
-  font-size: 20px;
+  display: flex;
+  color: var(--human-ink);
   flex-shrink: 0;
   margin-top: 2px
 }
@@ -112,17 +117,18 @@
 }
 
 .fd-human strong {
-  color: #2a5230
+  color: var(--human-ink)
 }
 
 .fd-human span {
   font-size: 12px;
-  color: #4a7a52
+  color: var(--human-ink)
 }
 
 .fd-end {
-  background: #f3f3ef;
-  border: 1.5px solid #ccc;
+  background: var(--tile);
+  color: var(--node-text);
+  border: 1.5px solid var(--line-strong);
   text-align: center;
   border-radius: 32px
 }
@@ -132,7 +138,7 @@
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
-  color: #9e310c;
+  color: var(--accent-text);
   margin-bottom: 2px
 }
 
@@ -144,15 +150,15 @@
   gap: 2px;
   padding: 6px 0;
   min-height: 32px;
-  color: #9e9e8e
+  color: var(--text-meta)
 }
 
 .fd-arrow-label {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
-  color: var(--ink);
-  background: #f6f4ee;
+  color: var(--text-strong);
+  background: var(--edge-label-bg);
   border: 1px solid var(--line);
   padding: 3px 8px;
   border-radius: 20px;
@@ -178,7 +184,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #fff;
+  background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 16px 12px;
@@ -190,23 +196,23 @@
 }
 
 .fd-fork-yes {
-  border-top: 3px solid #4a7a52
+  border-top: 3px solid var(--aacmp-stroke)
 }
 
 .fd-fork-no {
-  border-top: 3px solid #b04a30
+  border-top: 3px solid var(--accent-text)
 }
 
 .fd-fork-yes .fd-arrow-label {
-  background: #eef4ef;
-  border-color: #b2d1b5;
-  color: #2a5230
+  background: var(--aacmp-tint);
+  border-color: var(--aacmp-stroke);
+  color: var(--aacmp-text)
 }
 
 .fd-fork-no .fd-arrow-label {
-  background: #fdf1ee;
-  border-color: #f0c4b4;
-  color: #8a2e1a
+  background: var(--orange-tint);
+  border-color: var(--orange);
+  color: var(--accent-text)
 }
 
 /* Subfork (nested branches within a fork) */
@@ -222,7 +228,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #fafaf7;
+  background: var(--tile);
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 10px 6px;
@@ -238,20 +244,20 @@
 }
 
 .fd-subfork-no {
-  border-top: 2px solid #727465;
+  border-top: 2px solid var(--line-strong);
 }
 
 .fd-subfork-yes .fd-arrow-label {
-  background: #fff3ec;
-  border-color: #f7c3a8;
-  color: #a63208;
+  background: var(--orange-tint);
+  border-color: var(--orange);
+  color: var(--accent-text);
   font-size: 9px;
 }
 
 .fd-subfork-no .fd-arrow-label {
-  background: #f1f1eb;
-  border-color: #d2d2c6;
-  color: #4a4d42;
+  background: var(--tile);
+  border-color: var(--line-strong);
+  color: var(--text-body);
   font-size: 9px;
 }
 
@@ -269,6 +275,43 @@
 .fd-subfork-branch .fd-node span {
   font-size: 10.5px;
   line-height: 1.45;
+}
+
+/* Selector de vista: resumida (Dani) o detallada (Mariano) */
+.view-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin: 28px 0 0;
+  padding: 4px;
+  background: var(--toggle-bg);
+  border: 1px solid var(--line);
+  border-radius: 999px
+}
+
+.view-switch button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-detail);
+  cursor: pointer
+}
+
+.view-switch button:hover {
+  color: var(--accent-text)
+}
+
+.view-switch button[aria-pressed='true'] {
+  background: var(--toggle-on-bg);
+  color: var(--toggle-on-ink)
+}
+
+.view-switch button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px
 }
 
 /* Flow Diagram responsive */

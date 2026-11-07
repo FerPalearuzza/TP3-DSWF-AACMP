@@ -1,3 +1,6 @@
+import { Icon } from './Icons.jsx';
+import '../styles/flow-summary.css';
+
 const FLOWS = {
   r3: {
     title: 'Recorrido R3 · Inscripción',
@@ -14,13 +17,13 @@ const FLOWS = {
           {
             type: 'fork',
             yes: [{ type: 'end', label: 'Mostrar pago pendiente', sub: 'R3 · Inscripción en espera de acreditación' }],
-            no:  [{ type: 'end', label: 'Inscripción pendiente', sub: 'R3 · Sin confirmación automática en partidos gratuitos' }],
+            no:  [{ type: 'end', label: 'Inscripción pendiente', sub: 'R3 · Aclaración AACMP: la sentencia no confirma la inscripción en partidos gratuitos' }],
             yesLabel: 'SÍ · Arancelado', noLabel: 'NO · Gratuito',
           },
         ],
         no: [
-          { type: 'human',  label: 'Condición no cumplida o inconsistencia', sub: 'El agente informa el impedimento concreto (sin cupo o requisitos no cumplidos). Ante inconsistencias → revisión humana · AACMP' },
-          { type: 'end',    label: 'Fin', sub: 'No se genera reserva ni inscripción' },
+          { type: 'process', label: 'Informar el impedimento', sub: 'El agente informa qué condición falta (requisitos, inscripción previa o cupo) · AACMP' },
+          { type: 'end',     label: 'Fin · Sin reserva ni inscripción nueva', sub: 'R3 no se aplica' },
         ],
         yesLabel: 'SÍ', noLabel: 'NO',
       },
@@ -37,8 +40,16 @@ const FLOWS = {
         type: 'fork',
         yes: [
           { type: 'process', label: 'Mantener inscripción pendiente · No confirmar', sub: 'R4 · Sin confirmación automática' },
-          { type: 'human',   label: 'Comprobante presentado pero la fuente indica pago sin confirmar', sub: 'Caso límite · AACMP · El agente no confirma; deriva a operador humano' },
-          { type: 'end',     label: 'Fin · Inscripción permanece pendiente', sub: 'R4 · Se comunica el estado al usuario' },
+          { type: 'decision', label: '¿El usuario pide aclaración, por ejemplo con un comprobante? · AACMP' },
+          {
+            type: 'fork',
+            yes: [
+              { type: 'human', label: 'Ofrecer revisión humana', sub: 'Caso límite · AACMP · Un comprobante no reemplaza la confirmación del pago' },
+              { type: 'end',   label: 'Fin · Sigue pendiente, revisión ofrecida', sub: 'AACMP' },
+            ],
+            no:  [{ type: 'end', label: 'Fin · Inscripción pendiente, sin confirmar', sub: 'R4 · Se comunica el estado al usuario' }],
+            yesLabel: 'SÍ · Pide aclaración', noLabel: 'NO',
+          },
         ],
         no: [
           { type: 'process', label: 'R4 no determina el siguiente paso', sub: 'El agente no confirma ni cancela la inscripción · AACMP' },
@@ -81,7 +92,7 @@ function DecisionNode({ label }) {
 function HumanNode({ label, sub }) {
   return (
     <div className="fd-node fd-human">
-      <span className="fd-human-icon" aria-hidden="true">👤</span>
+      <span className="fd-human-icon" aria-hidden="true"><Icon name="users" size={20} /></span>
       <div>
         <strong>{label}</strong>
         {sub && <span>{sub}</span>}
