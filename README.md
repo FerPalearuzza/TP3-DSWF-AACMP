@@ -2,6 +2,19 @@
 
 Landing del grupo 04 AACMP para Desarrollo de Sistemas Web Frontend, IFTS 29 (2026). Presenta dos propuestas agénticas del bloque **S05-B: Inscripción y pago**, correspondientes a R3 y R4. Startup original del IFTS 16.
 
+- Repositorio: https://github.com/FerPalearuzza/TP3-DSWF-AACMP
+- Landing publicada: https://tp-3-dswf-aacmp.vercel.app/
+
+## Integrantes y aportes
+
+| Integrante | GitHub | Aporte concreto |
+|---|---|---|
+| Pablo Macia | [@pablormacia](https://github.com/pablormacia) | Base de la landing (rama `Pablo`): estructura en React + Vite, contenido de R3 y R4 en `proposals.js`, logo original y desplegables. |
+| Daniela Cabrera | [@Dancay5071](https://github.com/Dancay5071) | Primera versión de los diagramas R3 y R4 (rama `dani`), hoy la «vista resumida», y en el README la asignación docente, las sentencias y la lista de control de la consigna. |
+| Mariano Arenas | [@NanoCode10](https://github.com/NanoCode10) | Diagramas SVG de R3 y R4 (rama `marianoa`), hoy la «vista detallada», con supuestos, caso límite, versión textual y recorridos guiados; tema claro y oscuro, refinamiento visual y registro de iteraciones. |
+| Fernando Palearuzza | [@FerPalearuzza](https://github.com/FerPalearuzza) | Repositorio del grupo, publicación en Vercel, enlaces del README y `main` como rama por defecto. |
+| Juan Manuel Albareda | [@juanmanuelalbareda](https://github.com/juanmanuelalbareda) | Integración de las ramas (rama `juanMa`), selector de vista detallada / resumida, revisión cruzada de la lógica con las correcciones que salieron de ella, y este README. |
+
 ## Asignación docente
 
 - Startup: FUL Y VALE APP · S05 · Deportes y encuentros recreativos
@@ -22,7 +35,9 @@ Etapa 3 (rama `marianoa`): estructura, contenido aprobado, navegación por ancla
 
 Etapa «Tablero táctico interactivo» (rama `marianoa`): tema claro y oscuro, entrada animada del hero, exploración de los diagramas y recorridos guiados. La interacción es una capa opcional: sin hover, clic ni recorrido activo, cada diagrama se ve completo como antes, y ningún estado oculta nodos.
 
-Las sentencias originales se conservan en `src/data/proposals.js`. Las alternativas y herramientas agregadas se identifican como decisiones AACMP. Un partido gratuito no se confirma automáticamente por R3; un pago confirmado no confirma automáticamente una inscripción por R4.
+Integración (rama `juanMa`): reúne `main`, `marianoa` y `dani`. Cada propuesta ofrece dos vistas del mismo recorrido: la detallada, predeterminada, y la resumida en una columna.
+
+Las sentencias originales se conservan en `src/data/proposals.js`. Las alternativas y herramientas agregadas se identifican como decisiones AACMP. Un partido gratuito no se confirma automáticamente por R3; un pago confirmado no confirma automáticamente una inscripción por R4: la confirmación la decide una persona (AACMP).
 
 El logo original se copió desde el recurso proporcionado `S05.webp`, sin recrearlo ni modificar el archivo de imagen.
 
@@ -56,7 +71,8 @@ npm run preview
 - `src/data/walkthroughs.js`: salida de cada decisión en los seis recorridos; la ruta se calcula con las aristas de `flows.js`.
 - `src/styles/tokens.css`: variables semánticas de color de ambos temas.
 - `src/components/StartupIntro.jsx`: presentación y logo original.
-- `src/components/ProposalSection.jsx`: sección reutilizable para R3 y R4.
+- `src/components/ProposalSection.jsx`: sección reutilizable para R3 y R4, con el selector de vista detallada / resumida.
+- `src/components/FlowSummary.jsx`: vista resumida del diagrama, en una columna; `src/styles/flow-summary.css`: sus estilos.
 - `src/components/FlowDiagram.jsx`: renderer SVG genérico de los diagramas, con leyenda, caso límite, supuestos y versión textual generada desde el mismo grafo.
 - `src/data/flows.js`: nodos, conexiones y supuestos de cada recorrido.
 - `src/styles/flow-diagram.css`: estilos de los diagramas.
@@ -68,9 +84,9 @@ npm run preview
 - `src/styles/index.css`: identidad visual, estados de foco y adaptación de tamaños.
 - `public/images/S05.webp`: logo original.
 
-## Publicación prevista
+## Publicación
 
-Compatible con un proyecto Vite estático en Vercel: comando `npm run build`, directorio de salida `dist`. No necesita variables de entorno ni configuración de rutas SPA: la navegación usa anclas de la misma página. Todavía no se publicó.
+Proyecto Vite estático en Vercel: comando `npm run build`, directorio de salida `dist`. No necesita variables de entorno ni configuración de rutas SPA: la navegación usa anclas de la misma página. Vercel publica la rama `main`.
 
 - Repositorio público: https://github.com/FerPalearuzza/TP3-DSWF-AACMP
 - Landing publicada: https://tp-3-dswf-aacmp.vercel.app/
@@ -95,9 +111,17 @@ Diseño y funcionamiento (verificar en desktop):
 
 ## Participación y construcción agéntica
 
-El agente genera y modifica el código; AACMP dirige, revisa la lógica y verifica el resultado. Integrantes y aportes individuales: pendientes de completar con datos del equipo; no se inventan nombres.
+El agente genera y modifica el código; AACMP dirige, revisa la lógica y verifica el resultado. Integrantes y aportes: ver [Integrantes y aportes](#integrantes-y-aportes).
 
-Aplicación utilizada: Codex. Modelo: no informado en el registro del equipo; completar con el nombre visible en la interfaz si está disponible.
+| Integrante | Aplicación | Modelo | Para qué |
+|---|---|---|---|
+| Pablo Macia | Codex | Modelo no informado | Etapas 1 y 2: arquitectura, especificación de R3 y R4, estructura de la landing. |
+| Daniela Cabrera | Pendiente de que la integrante lo informe | Pendiente | Diagramas R3 y R4 de la rama `dani`. |
+| Mariano Arenas | Claude Code (en Herdr 0.9.5) | Claude Opus 5.5 (`claude-opus-5-5`) | Etapa 3 y siguientes: ver abajo. |
+| Fernando Palearuzza | Pendiente de que el integrante lo informe | Pendiente | Publicación y enlaces. |
+| Juan Manuel Albareda | Claude Code (extensión de VS Code) | Claude Opus 5.5 (`claude-opus-5-5`) | Integración y revisión cruzada: ver «Integración y revisión cruzada». |
+
+Etapas 1 y 2 (rama `Pablo`). Aplicación utilizada: Codex. Modelo: no informado en el registro del equipo.
 
 Iteraciones: arquitectura propuesta y aprobada; especificación funcional R3/R4 revisada y aprobada; implementación de la estructura solicitada. Se preservaron las restricciones sobre confirmación automática y la distinción entre reglas originales y decisiones AACMP.
 
@@ -192,6 +216,24 @@ Según lo informado en la sesión, el equipo revisó la versión anterior en vid
 
 Problema detectado por las pruebas y corregido: `mix-blend-mode` en una capa invisible cambiaba el suavizado del texto de toda la página aun en reposo. La mezcla ahora existe solo durante el hover y aislada dentro del disco.
 
+### Integración y revisión cruzada (rama `juanMa`)
+
+Integrante que dirigió esta sesión: Juan Manuel Albareda. Aplicación: Claude Code, extensión de VS Code. Modelo: Claude Opus 5.5 (`claude-opus-5-5`). Sin subagentes. El agente hizo los merges, el código y las pruebas; el integrante decidió qué integrar, aprobó cada cambio de lógica y revisó el resultado.
+
+Integración:
+
+- **Instrucción inicial:** reunir en `juanMa` lo de `main`, `marianoa` y `dani` sin tapar el aporte de nadie, y después pasarlo a `main`.
+- **Problema detectado:** Daniela y Mariano habían resuelto los diagramas en paralelo, sobre el mismo `FlowDiagram.jsx`. Elegir uno dejaba afuera el trabajo del otro.
+- **Decisión:** la vista de Mariano queda como «detallada», predeterminada porque lleva la leyenda, el caso límite y los supuestos; la de Daniela pasa a `FlowSummary.jsx` como «vista resumida», con un selector por propuesta (botones con `aria-pressed`, operables con teclado). Sus estilos pasaron a las variables de `tokens.css` para que respondan al tema oscuro. Los commits de cada integrante se conservan en el historial.
+
+Revisión cruzada de la lógica. Se recorrieron las dos vistas contra las sentencias, con un caso que cumple y otro que no en cada flujo; las dos respetan R3 y R4. Mejoras que surgieron:
+
+- **Vista resumida, R4 (diagrama de Daniela):** el caso límite del comprobante era un paso obligatorio de la rama SÍ y se leía como si todo caso pasara por ahí. Ahora es una decisión con dos salidas, igual que en la vista detallada.
+- **Vista resumida, R3 (diagrama de Daniela):** la rama NO mostraba a una persona interviniendo; ahora el agente informa qué condición falta. La etiqueta «sin confirmación automática» del partido gratuito se atribuía a R3, que no lo dice; pasó a aclaración AACMP. Es la misma corrección que la revisión de Mariano había hecho en su vista.
+- **Ambas vistas, R4 con el pago ya confirmado (diagrama de Mariano):** el flujo terminaba en «inscripción sin cambios». Era correcto, porque R4 no define la confirmación, pero el usuario que pagó quedaba pendiente sin salida, y ninguna sentencia asignada a FUL Y VALE APP (S05-A ni S05-B) define cuándo se confirma una inscripción. Ahora el agente sigue sin confirmar por su cuenta y deriva a una persona que verifica el pago y decide. Se actualizaron `flows.js`, `proposals.js` y la vista resumida; el recorrido «Caso negativo» de R4 llega al nuevo resultado.
+
+Verificación (Chromium con Playwright, sobre el build de producción): build correcto, sin errores de consola, sin desborde horizontal a 1280 y 390 px, en tema claro y oscuro; el selector de vista funciona con clic, Enter y Espacio; los textos de los nodos nuevos entran en sus formas.
+
 ## Revisión del equipo
 
 Verificación automatizada de la etapa «Tablero táctico», ejecutada por el agente en Chrome headless sobre el build de producción. Los scripts quedaron fuera del repositorio:
@@ -259,4 +301,4 @@ Pendiente de revisión humana (las pruebas anteriores no la sustituyen):
 - Confirmar el logo y la lectura de los diagramas en desktop.
 - Recorrer un caso que cumpla la condición y otro que no, en cada flujo, y poder explicarlos.
 - Revisar los «Supuesto AACMP» de los seis recorridos, probar ambos temas y la animación del hero, y usar la interacción en un teléfono real.
-- Antes de la entrega, registrar integrantes, aportes, revisión cruzada y comprobar los enlaces públicos sin sesión.
+- Integrantes, aportes y revisión cruzada: registrados (ver arriba). Falta la aplicación y el modelo de Daniela y de Fernando, y comprobar los enlaces públicos sin sesión con la versión final en `main`.
