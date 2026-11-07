@@ -1,0 +1,297 @@
+/* Vista resumida de los diagramas (FlowSummary.jsx). Estilos originales de la rama dani. */
+.fd-figure {
+  margin: 32px 0;
+  background: #fafaf5;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden
+}
+
+.fd-figure figcaption {
+  padding: 22px 28px 16px;
+  border-bottom: 1px solid var(--line)
+}
+
+.fd-figure figcaption h3 {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  margin: 0 0 6px;
+  color: var(--ink)
+}
+
+.fd-caption-note {
+  font-size: 12px;
+  color: #6e7162;
+  margin: 0;
+  line-height: 1.6
+}
+
+.fd-flow {
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0
+}
+
+.fd-flow>span {
+  display: contents
+}
+
+/* Nodes */
+.fd-node {
+  width: min(520px, 100%);
+  padding: 14px 20px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px
+}
+
+.fd-node strong {
+  font-size: 14px;
+  line-height: 1.4
+}
+
+.fd-node span {
+  font-size: 12px;
+  color: #6e7162;
+  line-height: 1.6
+}
+
+.fd-start {
+  background: var(--ink);
+  color: #f6f4ee;
+  text-align: center;
+  border-radius: 32px
+}
+
+.fd-start span {
+  color: #b4b6a9
+}
+
+.fd-process {
+  background: #fff;
+  border: 1.5px solid var(--line)
+}
+
+.fd-decision {
+  background: #fff8f3;
+  border: 2px solid var(--orange);
+  text-align: center;
+  gap: 8px
+}
+
+.fd-diamond {
+  color: var(--orange);
+  font-size: 22px;
+  line-height: 1
+}
+
+.fd-human {
+  background: #eef4ef;
+  border: 1.5px solid #b2d1b5;
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-start
+}
+
+.fd-human-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px
+}
+
+.fd-human div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px
+}
+
+.fd-human strong {
+  color: #2a5230
+}
+
+.fd-human span {
+  font-size: 12px;
+  color: #4a7a52
+}
+
+.fd-end {
+  background: #f3f3ef;
+  border: 1.5px solid #ccc;
+  text-align: center;
+  border-radius: 32px
+}
+
+.fd-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #9e310c;
+  margin-bottom: 2px
+}
+
+/* Arrows */
+.fd-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 0;
+  min-height: 32px;
+  color: #9e9e8e
+}
+
+.fd-arrow-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--ink);
+  background: #f6f4ee;
+  border: 1px solid var(--line);
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap
+}
+
+.fd-arrow-line {
+  font-size: 18px;
+  line-height: 1;
+  color: var(--orange)
+}
+
+/* Fork (two branches side by side) */
+.fd-fork {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: min(840px, 100%);
+  align-items: start
+}
+
+.fd-fork-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px 12px;
+  gap: 0
+}
+
+.fd-fork-branch>span {
+  display: contents
+}
+
+.fd-fork-yes {
+  border-top: 3px solid #4a7a52
+}
+
+.fd-fork-no {
+  border-top: 3px solid #b04a30
+}
+
+.fd-fork-yes .fd-arrow-label {
+  background: #eef4ef;
+  border-color: #b2d1b5;
+  color: #2a5230
+}
+
+.fd-fork-no .fd-arrow-label {
+  background: #fdf1ee;
+  border-color: #f0c4b4;
+  color: #8a2e1a
+}
+
+/* Subfork (nested branches within a fork) */
+.fd-subfork {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.fd-subfork-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fafaf7;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.fd-subfork-branch>span {
+  display: contents;
+}
+
+.fd-subfork-yes {
+  border-top: 2px solid var(--orange);
+}
+
+.fd-subfork-no {
+  border-top: 2px solid #727465;
+}
+
+.fd-subfork-yes .fd-arrow-label {
+  background: #fff3ec;
+  border-color: #f7c3a8;
+  color: #a63208;
+  font-size: 9px;
+}
+
+.fd-subfork-no .fd-arrow-label {
+  background: #f1f1eb;
+  border-color: #d2d2c6;
+  color: #4a4d42;
+  font-size: 9px;
+}
+
+.fd-subfork-branch .fd-node {
+  padding: 10px 8px;
+  font-size: 11.5px;
+  width: 100%;
+}
+
+.fd-subfork-branch .fd-node strong {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.fd-subfork-branch .fd-node span {
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+/* Flow Diagram responsive */
+@media(max-width:640px) {
+  .fd-fork {
+    grid-template-columns: 1fr;
+    gap: 16px
+  }
+
+  .fd-subfork {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .fd-figure figcaption {
+    padding: 16px 16px 12px
+  }
+
+  .fd-flow {
+    padding: 20px 12px
+  }
+
+  .fd-node {
+    width: 100%
+  }
+}

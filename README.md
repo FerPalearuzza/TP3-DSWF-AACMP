@@ -2,6 +2,20 @@
 
 Landing del grupo 04 AACMP para Desarrollo de Sistemas Web Frontend, IFTS 29 (2026). Presenta dos propuestas agénticas del bloque **S05-B: Inscripción y pago**, correspondientes a R3 y R4. Startup original del IFTS 16.
 
+## Asignación docente
+
+- Startup: FUL Y VALE APP · S05 · Deportes y encuentros recreativos
+- Bloque: S05-B · Inscripción y pago
+- Origen: startup creada por estudiantes del IFTS 16
+
+## Sentencias asignadas
+
+R3 — Inscripción
+> Si un usuario cumple los requisitos del partido, solicita inscribirse, aún no tiene una inscripción y hay cupo libre, el sistema reserva un cupo e inicia una inscripción pendiente; si el partido es arancelado, muestra el pago pendiente.
+
+R4 — Control de pago
+> Si existe una inscripción pendiente en un partido arancelado y su pago todavía no fue confirmado, el sistema mantiene esa inscripción pendiente y no la confirma.
+
 ## Alcance y estado
 
 Etapa 3 (rama `marianoa`): estructura, contenido aprobado, navegación por anclas, desplegables nativos y dos diagramas de flujo SVG, uno para R3 y otro para R4. No hay backend, APIs, agentes funcionales ni procesamiento de pagos.
@@ -60,6 +74,24 @@ Compatible con un proyecto Vite estático en Vercel: comando `npm run build`, di
 
 - Repositorio público: https://github.com/FerPalearuzza/TP3-DSWF-AACMP
 - Landing publicada: https://tp-3-dswf-aacmp.vercel.app/
+
+## Lista de control de la consigna
+
+Contenido y lógica:
+
+- Startup identificada con logo original legible.
+- Las dos sentencias (R3 y R4) están presentes y sin modificar.
+- Cada diagrama de flujo corresponde a su sentencia.
+- Los diagramas distinguen condiciones de la regla vs. decisiones AACMP.
+- Se recorrió un caso positivo, uno negativo y uno límite para cada flujo.
+
+Diseño y funcionamiento (verificar en desktop):
+
+- El logo se ve completo y nítido.
+- Ambos diagramas son legibles, sin desbordes horizontales.
+- Los desplegables se abren con clic, Tab, Enter y Espacio.
+- La página se puede leer y recorrer sin desbordes en desktop.
+- Otra persona puede explicar las propuestas después de recorrerla.
 
 ## Participación y construcción agéntica
 
