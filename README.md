@@ -41,6 +41,8 @@ Etapa «Tablero táctico interactivo» (rama `marianoa`): tema claro y oscuro, e
 
 Integración y revisión cruzada (rama `juanMa`): reúne `main`, `marianoa` y `dani`. Cada propuesta ofrece dos vistas del mismo recorrido: la detallada, predeterminada, y la resumida en una columna. La revisión entre integrantes y las mejoras que surgieron de ella están en [Integración y revisión cruzada](#integración-y-revisión-cruzada-rama-juanma).
 
+Publicación (rama `main`): repositorio del grupo, deploy en Vercel desde `main`, enlaces en el README y `main` como rama por defecto.
+
 Las sentencias originales se conservan en `src/data/proposals.js`. Las alternativas y herramientas agregadas se identifican como decisiones AACMP. Un partido gratuito no se confirma automáticamente por R3; un pago confirmado no confirma automáticamente una inscripción por R4: la confirmación la decide una persona (AACMP).
 
 El logo original se copió desde el recurso proporcionado `S05.webp`, sin recrearlo ni modificar el archivo de imagen.
