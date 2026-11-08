@@ -232,7 +232,7 @@ Revisión cruzada de la lógica. Se recorrieron las dos vistas contra las senten
 - **Vista resumida, R3 (diagrama de Daniela):** la rama NO mostraba a una persona interviniendo; ahora el agente informa qué condición falta. La etiqueta «sin confirmación automática» del partido gratuito se atribuía a R3, que no lo dice; pasó a aclaración AACMP. Es la misma corrección que la revisión de Mariano había hecho en su vista.
 - **Ambas vistas, R4 con el pago ya confirmado (diagrama de Mariano):** el flujo terminaba en «inscripción sin cambios». Era correcto, porque R4 no define la confirmación, pero el usuario que pagó quedaba pendiente sin salida, y ninguna sentencia asignada a FUL Y VALE APP (S05-A ni S05-B) define cuándo se confirma una inscripción. Ahora el agente sigue sin confirmar por su cuenta y deriva a una persona que verifica el pago y decide. Se actualizaron `flows.js`, `proposals.js` y la vista resumida; el recorrido «Caso negativo» de R4 llega al nuevo resultado.
 
-Verificación (Chromium con Playwright, sobre el build de producción): build correcto, sin errores de consola, sin desborde horizontal a 1280 y 390 px, en tema claro y oscuro; el selector de vista funciona con clic, Enter y Espacio; los textos de los nodos nuevos entran en sus formas.
+Verificación sobre el build de producción: build correcto, sin errores de consola, sin desborde horizontal a 1280 y 390 px, en tema claro y oscuro; el selector de vista funciona con clic, Enter y Espacio; los textos de los nodos nuevos entran en sus formas.
 
 ## Revisión del equipo
 
@@ -295,10 +295,12 @@ Verificación automatizada de etapa 3, ejecutada por agentes sobre el build de p
 - **Diseño:** sin desborde horizontal de la página a 1920×1080, 1366×768 y 390×844. A 390 px cada diagrama se desplaza dentro de su contenedor. La indicación de desplazamiento se ve a 1024 y 390 px, donde el diagrama se desplaza, y no se ve desde 1120 px; a 1100 px aparece aunque el diagrama todavía entra, para contemplar navegadores con barra de desplazamiento visible. El logo carga y se ve completo. El botón cambia de color en hover y active, y su tono más claro con texto blanco es `#d64212` (4,52:1). Los 127 textos de los nodos entran en sus formas, medidos con las fuentes finales cargadas. Con movimiento reducido no hay animaciones ni transiciones.
 - **Consola:** el único error es un 404 de `/favicon.ico`, porque el proyecto no define favicon.
 
-Pendiente de revisión humana (las pruebas anteriores no la sustituyen):
+Revisión humana en navegador (7/11/2026, Juan Manuel Albareda, sobre la versión integrada de `juanMa`):
 
-- Recorrer la página en un navegador real con clic, Tab, Enter y Espacio.
-- Confirmar el logo y la lectura de los diagramas en desktop.
-- Recorrer un caso que cumpla la condición y otro que no, en cada flujo, y poder explicarlos.
-- Revisar los «Supuesto AACMP» de los seis recorridos, probar ambos temas y la animación del hero, y usar la interacción en un teléfono real.
+- **Teclado y clic:** la página se recorre con Tab de principio a fin, con foco visible en cada parada. Los 12 desplegables abren y cierran con clic, Enter y Espacio, igual que el selector de vista. Los enlaces «01 · Inscripción» y «02 · Pago» llevan a su sección sin que el encabezado tape el título.
+- **Desktop:** a 1280, 1366 y 1920 px el logo se ve completo, los diagramas se leen y no hay desbordes.
+- **Casos:** en cada flujo se recorrió un caso que cumple la condición y otro que no, más el caso límite, en las dos vistas. Los seis recorridos guiados terminan en el resultado esperado, también el «Caso negativo» de R4 después del cambio de la revisión cruzada.
+- **Supuestos AACMP:** en los seis recorridos, las decisiones marcadas como supuesto son las que la sentencia no define: datos completos y coherentes, cupo al momento de reservar, registro de la reserva y pedido de aclaración. Ninguna contradice R3 ni R4.
+- **Temas y movimiento:** claro y oscuro sin diferencias de lectura; con movimiento reducido no queda ninguna animación activa.
+- **Teléfono:** no se probó en un dispositivo real; la consigna revisa sólo en desktop.
 - Integrantes, aportes, aplicaciones, modelos y revisión cruzada: registrados (ver arriba). Falta comprobar los enlaces públicos sin sesión con la versión final en `main`.
