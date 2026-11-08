@@ -127,7 +127,7 @@ Iteraciones: arquitectura propuesta y aprobada; especificación funcional R3/R4 
 
 ### Etapa 3: diagramas R3 y R4 (rama `marianoa`)
 
-Integrante que dirigió esta sesión: Mariano Arenas. Redactó el encargo (alcance, reglas de trabajo, cuidados sobre la lógica de R3 y R4, fases y pruebas pedidas). La revisión humana del resultado sigue pendiente; ver «Revisión del equipo».
+Integrante que dirigió esta sesión: Mariano Arenas. Redactó el encargo (alcance, reglas de trabajo, cuidados sobre la lógica de R3 y R4, fases y pruebas pedidas). La revisión humana del resultado la hizo Juan Manuel Albareda, en la integración; ver «Integración y revisión cruzada» y «Revisión del equipo».
 
 Aplicación: Claude Code, ejecutado dentro del gestor de terminales Herdr 0.9.5. Modelo: Claude Opus 5.5 (`claude-opus-5-5`), tanto en la sesión principal como en los subagentes.
 
