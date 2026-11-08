@@ -31,9 +31,11 @@ R4 — Control de pago
 
 ## Alcance y estado
 
-Etapas 1 y 2: estructura, contenido aprobado, navegación por anclas y desplegables nativos.
+Etapas 1 y 2 (rama `Pablo`): estructura, contenido aprobado, navegación por anclas y desplegables nativos.
 
 Etapa 3 (rama `marianoa`): estructura, contenido aprobado, navegación por anclas, desplegables nativos y dos diagramas de flujo SVG, uno para R3 y otro para R4. No hay backend, APIs, agentes funcionales ni procesamiento de pagos.
+
+Etapa 3 en paralelo (rama `dani`): primera versión de los diagramas R3 y R4, con nodos HTML y CSS, bifurcaciones SÍ/NO y marca de las decisiones AACMP; hoy es la vista resumida. Además, el README sumó la asignación docente, las sentencias y la lista de control de la consigna.
 
 Etapa «Tablero táctico interactivo» (rama `marianoa`): tema claro y oscuro, entrada animada del hero, exploración de los diagramas y recorridos guiados. La interacción es una capa opcional: sin hover, clic ni recorrido activo, cada diagrama se ve completo como antes, y ningún estado oculta nodos.
 
