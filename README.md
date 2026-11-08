@@ -115,13 +115,13 @@ El agente genera y modifica el código; AACMP dirige, revisa la lógica y verifi
 
 | Integrante | Aplicación | Modelo | Para qué |
 |---|---|---|---|
-| Pablo Macia | Codex | Modelo no informado | Etapas 1 y 2: arquitectura, especificación de R3 y R4, estructura de la landing. |
-| Daniela Cabrera | Pendiente de que la integrante lo informe | Pendiente | Diagramas R3 y R4 de la rama `dani`. |
+| Pablo Macia | OpenAI Codex | GPT-6 | Etapas 1 y 2: arquitectura, especificación de R3 y R4, estructura de la landing. |
+| Daniela Cabrera | Google Antigravity (IDE) | Gemini 3.8 Flash, Claude Sonnet 4.6 | Diagramas R3 y R4 de la rama `dani` y reorganización del README. |
 | Mariano Arenas | Claude Code (en Herdr 0.9.5) | Claude Opus 5.5 (`claude-opus-5-5`) | Etapa 3 y siguientes: ver abajo. |
-| Fernando Palearuzza | Pendiente de que el integrante lo informe | Pendiente | Publicación y enlaces. |
+| Fernando Palearuzza | GitHub Copilot | GPT-6 Luna | Revisión del repositorio, publicación en Vercel y enlaces del README. |
 | Juan Manuel Albareda | Claude Code (extensión de VS Code) | Claude Opus 5.5 (`claude-opus-5-5`) | Integración y revisión cruzada: ver «Integración y revisión cruzada». |
 
-Etapas 1 y 2 (rama `Pablo`). Aplicación utilizada: Codex. Modelo: no informado en el registro del equipo.
+Etapas 1 y 2 (rama `Pablo`). Aplicación utilizada: OpenAI Codex. Modelo: GPT-6.
 
 Iteraciones: arquitectura propuesta y aprobada; especificación funcional R3/R4 revisada y aprobada; implementación de la estructura solicitada. Se preservaron las restricciones sobre confirmación automática y la distinción entre reglas originales y decisiones AACMP.
 
@@ -301,4 +301,4 @@ Pendiente de revisión humana (las pruebas anteriores no la sustituyen):
 - Confirmar el logo y la lectura de los diagramas en desktop.
 - Recorrer un caso que cumpla la condición y otro que no, en cada flujo, y poder explicarlos.
 - Revisar los «Supuesto AACMP» de los seis recorridos, probar ambos temas y la animación del hero, y usar la interacción en un teléfono real.
-- Integrantes, aportes y revisión cruzada: registrados (ver arriba). Falta la aplicación y el modelo de Daniela y de Fernando, y comprobar los enlaces públicos sin sesión con la versión final en `main`.
+- Integrantes, aportes, aplicaciones, modelos y revisión cruzada: registrados (ver arriba). Falta comprobar los enlaces públicos sin sesión con la versión final en `main`.
