@@ -31,11 +31,13 @@ R4 — Control de pago
 
 ## Alcance y estado
 
+Etapas 1 y 2: estructura, contenido aprobado, navegación por anclas y desplegables nativos.
+
 Etapa 3 (rama `marianoa`): estructura, contenido aprobado, navegación por anclas, desplegables nativos y dos diagramas de flujo SVG, uno para R3 y otro para R4. No hay backend, APIs, agentes funcionales ni procesamiento de pagos.
 
 Etapa «Tablero táctico interactivo» (rama `marianoa`): tema claro y oscuro, entrada animada del hero, exploración de los diagramas y recorridos guiados. La interacción es una capa opcional: sin hover, clic ni recorrido activo, cada diagrama se ve completo como antes, y ningún estado oculta nodos.
 
-Integración (rama `juanMa`): reúne `main`, `marianoa` y `dani`. Cada propuesta ofrece dos vistas del mismo recorrido: la detallada, predeterminada, y la resumida en una columna.
+Integración y revisión cruzada (rama `juanMa`): reúne `main`, `marianoa` y `dani`. Cada propuesta ofrece dos vistas del mismo recorrido: la detallada, predeterminada, y la resumida en una columna. La revisión entre integrantes y las mejoras que surgieron de ella están en [Integración y revisión cruzada](#integración-y-revisión-cruzada-rama-juanma).
 
 Las sentencias originales se conservan en `src/data/proposals.js`. Las alternativas y herramientas agregadas se identifican como decisiones AACMP. Un partido gratuito no se confirma automáticamente por R3; un pago confirmado no confirma automáticamente una inscripción por R4: la confirmación la decide una persona (AACMP).
 
