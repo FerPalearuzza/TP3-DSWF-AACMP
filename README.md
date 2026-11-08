@@ -132,7 +132,9 @@ El agente genera y modifica el código; AACMP dirige, revisa la lógica y verifi
 | Fernando Palearuzza | GitHub Copilot | GPT-6 Luna | Revisión del repositorio, publicación en Vercel y enlaces del README. |
 | Juan Manuel Albareda | Claude Code (extensión de VS Code) | Claude Opus 5.5 (`claude-opus-5-5`) | Integración y revisión cruzada: ver «Integración y revisión cruzada». |
 
-Etapas 1 y 2 (rama `Pablo`). Aplicación utilizada: OpenAI Codex. Modelo: GPT-6.
+### Etapas 1 y 2: estructura y contenido (rama `Pablo`)
+
+Aplicación utilizada: OpenAI Codex. Modelo: GPT-6.
 
 Iteraciones: arquitectura propuesta y aprobada; especificación funcional R3/R4 revisada y aprobada; implementación de la estructura solicitada. Se preservaron las restricciones sobre confirmación automática y la distinción entre reglas originales y decisiones AACMP.
 
@@ -226,6 +228,14 @@ Según lo informado en la sesión, el equipo revisó la versión anterior en vid
 - **Segunda capa recortada del balón:** se descartó sin probarla. En la imagen, el balón está tapado por llamas y por la banda «FYV», así que girar un recorte rompería esos bordes.
 
 Problema detectado por las pruebas y corregido: `mix-blend-mode` en una capa invisible cambiaba el suavizado del texto de toda la página aun en reposo. La mezcla ahora existe solo durante el hover y aislada dentro del disco.
+
+### Etapa 3 en paralelo: diagramas R3 y R4 (rama `dani`)
+
+Integrante: Daniela Cabrera. Aplicación: Google Antigravity (IDE). Modelos: Gemini 3.8 Flash y Claude Sonnet 4.6.
+
+- **Diagramas:** primera versión de R3 y R4 en `FlowDiagram.jsx`, con nodos HTML y CSS por tipo (inicio, consulta, decisión, persona y fin), bifurcaciones SÍ/NO y la distinción entre lo que viene de la regla y lo que decide AACMP. Hoy es la vista resumida (`FlowSummary.jsx`).
+- **Corrección de R3:** la rama NO decía «Sin datos o hay inconsistencia»; pasó a «Condición no cumplida o inconsistencia», con el impedimento concreto (sin cupo o requisitos no cumplidos). La bifurcación anidada de «¿El partido es arancelado?» pasó a un componente propio.
+- **README:** asignación docente, sentencias asignadas y lista de control de la consigna.
 
 ### Integración y revisión cruzada (rama `juanMa`)
 
