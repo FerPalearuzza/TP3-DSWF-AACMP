@@ -88,6 +88,11 @@ npm run preview
 
 Proyecto Vite estático en Vercel: comando `npm run build`, directorio de salida `dist`. No necesita variables de entorno ni configuración de rutas SPA: la navegación usa anclas de la misma página. Vercel publica la rama `main`.
 
+Comprobación de enlaces (7/11/2026, desde una ventana sin sesión):
+
+- Repositorio: abre sin pedir login y muestra `main` en el commit `cc88caa`.
+- Landing: abre sin pedir login y sirve el mismo build que `main` en ese commit (`assets/index-DEnzMHX3.js`). Muestra los dos diagramas con el selector de vista y los 12 desplegables, sin el marcador «EN PREPARACIÓN» de la versión anterior, y sin errores de consola.
+
 - Repositorio público: https://github.com/FerPalearuzza/TP3-DSWF-AACMP
 - Landing publicada: https://tp-3-dswf-aacmp.vercel.app/
 
@@ -303,4 +308,4 @@ Revisión humana en navegador (7/11/2026, Juan Manuel Albareda, sobre la versió
 - **Supuestos AACMP:** en los seis recorridos, las decisiones marcadas como supuesto son las que la sentencia no define: datos completos y coherentes, cupo al momento de reservar, registro de la reserva y pedido de aclaración. Ninguna contradice R3 ni R4.
 - **Temas y movimiento:** claro y oscuro sin diferencias de lectura; con movimiento reducido no queda ninguna animación activa.
 - **Teléfono:** no se probó en un dispositivo real; la consigna revisa sólo en desktop.
-- Integrantes, aportes, aplicaciones, modelos y revisión cruzada: registrados (ver arriba). Falta comprobar los enlaces públicos sin sesión con la versión final en `main`.
+- Integrantes, aportes, aplicaciones, modelos y revisión cruzada: registrados (ver arriba). Enlaces públicos comprobados sin sesión con la versión final: ver «Publicación».
