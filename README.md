@@ -13,7 +13,7 @@ Landing del grupo 04 AACMP para Desarrollo de Sistemas Web Frontend, IFTS 29 (20
 | Daniela Cabrera | [@Dancay5071](https://github.com/Dancay5071) | Primera versión de los diagramas R3 y R4 (rama `dani`), hoy la «vista resumida», y en el README la asignación docente, las sentencias y la lista de control de la consigna. |
 | Mariano Arenas | [@NanoCode10](https://github.com/NanoCode10) | Diagramas SVG de R3 y R4 (rama `marianoa`), hoy la «vista detallada», con supuestos, caso límite, versión textual y recorridos guiados; tema claro y oscuro, refinamiento visual y registro de iteraciones. |
 | Fernando Palearuzza | [@FerPalearuzza](https://github.com/FerPalearuzza) | Repositorio del grupo, publicación en Vercel, enlaces del README y `main` como rama por defecto. |
-| Juan Manuel Albareda | [@juanmanuelalbareda](https://github.com/juanmanuelalbareda) | Integración de las ramas (rama `juanMa`), selector de vista detallada / resumida, revisión cruzada de la lógica con las correcciones que salieron de ella, y este README. |
+| Juan Manuel Albareda | [@juanmanuelalbareda](https://github.com/juanmanuelalbareda) | Integración de las ramas (rama `juanMa`), selector de vista detallada / resumida, revisión cruzada de la lógica con las correcciones que salieron de ella, y en el README: integrantes y aportes, registro de aplicaciones y modelos, revisión en navegador y comprobación de enlaces. |
 
 ## Asignación docente
 
