@@ -94,10 +94,10 @@ npm run preview
 
 Proyecto Vite estático en Vercel: comando `npm run build`, directorio de salida `dist`. No necesita variables de entorno ni configuración de rutas SPA: la navegación usa anclas de la misma página. Vercel publica la rama `main`.
 
-Comprobación de enlaces (7/11/2026, desde una ventana sin sesión):
+Comprobación de enlaces, desde una ventana sin sesión, después del último commit en `main`:
 
-- Repositorio: abre sin pedir login y muestra `main` en el commit `cc88caa`.
-- Landing: abre sin pedir login y sirve el mismo build que `main` en ese commit (`assets/index-DEnzMHX3.js`). Muestra los dos diagramas con el selector de vista y los 12 desplegables, sin el marcador «EN PREPARACIÓN» de la versión anterior, y sin errores de consola.
+- Repositorio: abre sin pedir login y muestra la rama `main`.
+- Landing: abre sin pedir login y sirve el mismo build que `main`. Muestra los dos diagramas con el selector de vista y los 12 desplegables, sin el marcador «EN PREPARACIÓN» de la versión anterior, y sin errores de consola.
 
 - Repositorio público: https://github.com/FerPalearuzza/TP3-DSWF-AACMP
 - Landing publicada: https://tp-3-dswf-aacmp.vercel.app/
@@ -302,7 +302,7 @@ Limitaciones conocidas:
 - La reacción del balón requiere cursor: en pantallas táctiles no aparece, y queda la animación de entrada.
 - Esc funciona con el foco dentro del panel, no con el foco en el lienzo.
 
-Verificación técnica de etapa 2: build de producción correcto con React 19.3.1 y Vite 8.3.5; render de React comprobado con dos propuestas, diez desplegables, sentencias presentes, tres casos por propuesta, IDs únicos y anclas resueltas. Logo copiado con hash SHA-256 idéntico al original. Instalación sin vulnerabilidades reportadas. La revisión visual y la interacción real por teclado en navegador siguen pendientes; el render estático no las sustituye.
+Verificación técnica de etapa 2: build de producción correcto con React 19.3.1 y Vite 8.3.5; render de React comprobado con dos propuestas, diez desplegables, sentencias presentes, tres casos por propuesta, IDs únicos y anclas resueltas. Logo copiado con hash SHA-256 idéntico al original. Instalación sin vulnerabilidades reportadas. La revisión visual y la interacción real por teclado en navegador siguen pendientes; el render estático no las sustituye. Se hicieron después: ver «Revisión humana en navegador».
 
 Verificación automatizada de etapa 3, ejecutada por agentes sobre el build de producción en Chrome headless:
 
@@ -316,7 +316,7 @@ Verificación automatizada de etapa 3, ejecutada por agentes sobre el build de p
 - **Diseño:** sin desborde horizontal de la página a 1920×1080, 1366×768 y 390×844. A 390 px cada diagrama se desplaza dentro de su contenedor. La indicación de desplazamiento se ve a 1024 y 390 px, donde el diagrama se desplaza, y no se ve desde 1120 px; a 1100 px aparece aunque el diagrama todavía entra, para contemplar navegadores con barra de desplazamiento visible. El logo carga y se ve completo. El botón cambia de color en hover y active, y su tono más claro con texto blanco es `#d64212` (4,52:1). Los 127 textos de los nodos entran en sus formas, medidos con las fuentes finales cargadas. Con movimiento reducido no hay animaciones ni transiciones.
 - **Consola:** el único error es un 404 de `/favicon.ico`, porque el proyecto no define favicon.
 
-Revisión humana en navegador (7/11/2026, Juan Manuel Albareda, sobre la versión integrada de `juanMa`):
+Revisión humana en navegador (Juan Manuel Albareda, sobre la versión integrada de `juanMa`):
 
 - **Teclado y clic:** la página se recorre con Tab de principio a fin, con foco visible en cada parada. Los 12 desplegables abren y cierran con clic, Enter y Espacio, igual que el selector de vista. Los enlaces «01 · Inscripción» y «02 · Pago» llevan a su sección sin que el encabezado tape el título.
 - **Desktop:** a 1280, 1366 y 1920 px el logo se ve completo, los diagramas se leen y no hay desbordes.
